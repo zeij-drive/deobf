@@ -1,0 +1,45 @@
+---
+title: deobf-all 简介
+description: AI Agent 统一反混淆技能套件 — 一条命令加载整个反混淆武器库
+---
+
+# deobf-all 简介
+
+**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一入口。你不需要为不同的混淆类型手动加载各自的 skill，只需调用一次 `deobf-all`，它就会：
+
+1. **同时加载全部 9 个子 skill** 到 agent 上下文中
+2. **对你的目标进行分类**（原生二进制、JavaScript、字节码、CTF、未知类型）
+3. **路由到最优 skill 组合**，针对具体的混淆类型
+4. **引导完整的反混淆工作流**：分类 → 分析 → 反混淆 → 验证
+
+## 为什么选择 deobf-all？
+
+<CardGroup cols={2}>
+  <Card title="统一入口" icon="bolt">
+    不必记住每个 skill 的名称。一个命令 `/deobf-all`，自动拉起全部 9 个专业子 skill。
+  </Card>
+  <Card title="智能路由" icon="route">
+    根据目标类型和混淆特征，自动选择最优 skill 组合，而非暴力加载全部能力。
+  </Card>
+  <Card title="全场景覆盖" icon="shield-halved">
+    从 VMProtect 到 obfuscator.io，从 OLLVM 到自定义 VM — 覆盖主流混淆与保护方案。
+  </Card>
+  <Card title="可扩展" icon="puzzle-piece">
+    架构设计为可扩展：新增子 skill 只需更新调度器的路由表。
+  </Card>
+</CardGroup>
+
+## 适用场景
+
+| 场景 | 说明 |
+|------|------|
+| 静态分析遇阻 | 控制流扁平化、字符串加密、opaque predicates 导致代码不可读 |
+| VM 保护 | VMProtect / Themida / 自定义 VM 调度器保护的原生二进制 |
+| JavaScript 混淆 | obfuscator.io、JSFuck、自定义 JS 混淆器 |
+| 反调试绕过 | 遇到 ptrace、PEB 检查、时序攻击、TLS callback 等反调试手段 |
+| CTF 逆向 | CTF 竞赛中的逆向工程挑战题 |
+| 未知保护 | 不清楚目标使用了何种保护方案，需要先分类 |
+
+<Note>
+本 skill 套件仅限**授权的安全研究、CTF 竞赛和教育目的**使用。请始终确保在分析或反混淆任何软件前获得了适当授权。
+</Note>

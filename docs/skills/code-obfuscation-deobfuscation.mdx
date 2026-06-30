@@ -1,0 +1,41 @@
+---
+title: code-obfuscation-deobfuscation
+description: 核心反混淆 Skill — 控制流扁平化、opaque predicates、字符串加密、import 隐藏、反反汇编
+---
+
+# code-obfuscation-deobfuscation
+
+<Info>
+**来源**: [yaklang/hack-skills](https://github.com/yaklang/hack-skills) &nbsp;·&nbsp; **安装量**: 1.8K &nbsp;·&nbsp; **优先级**: P0
+</Info>
+
+核心反混淆 Skill，处理原生二进制中的常见混淆技术。
+
+## 支持的混淆类型
+
+| 混淆技术 | 说明 |
+|---------|------|
+| 控制流扁平化 (CFF) | 将正常控制流打平为 switch-case 调度器 |
+| Opaque Predicates | 插入永真/永假的条件分支 |
+| 字符串加密 | 在运行时解密的加密字符串表 |
+| Import 隐藏 | 动态解析 API 调用，隐藏导入表 |
+| 反反汇编 | 利用窃取指令、花指令等干扰反汇编器 |
+
+## 适用场景
+
+- OLLVM/Armarines 控制流扁平化还原
+- 字符串解密和恢复
+- Import 地址重建
+- 花指令清理
+
+## 路由触发条件
+
+当调度器检测到以下任一条件时自动加载：
+- 原生二进制目标
+- 检测到 CFF 模式
+- 存在加密字符串引用
+- 导入表异常（大量动态解析）
+
+<Note>
+此 skill 是 **P0 优先级** — 遇到原生二进制目标时始终加载。
+</Note>

@@ -1,0 +1,41 @@
+---
+title: 系统要求
+description: 运行 deobf-all 所需的环境和平台
+---
+
+# 系统要求
+
+## 运行环境
+
+| 要求 | 版本 | 用途 |
+|------|------|------|
+| Node.js | >= 18 | `npx skills` CLI 运行时 |
+| npm / npx | latest | Skill 包管理器 |
+| Agent 平台 | 任意支持 | 见下表 |
+
+## 支持的 Agent 平台
+
+`npx skills` 可自动检测以下平台：
+
+| 平台 | 支持状态 |
+|------|----------|
+| Claude Code | ✅ 支持 |
+| Cursor | ✅ 支持 |
+| Codex | ✅ 支持 |
+| Windsurf | ✅ 支持 |
+| Gemini CLI | ✅ 支持 |
+| GitHub Copilot | ✅ 支持 |
+| Antigravity | ✅ 支持 |
+| Lingma | ✅ 支持 |
+| OpenCode | ✅ 支持 |
+| Rovo Dev | ✅ 支持 |
+| Trae | ✅ 支持 |
+| Trae CN | ✅ 支持 |
+
+<Warning>
+确保你的 Node.js 版本 >= 18。你可以通过 `node --version` 检查当前版本。
+</Warning>
+
+## 磁盘空间
+
+完整安装全部 9 个子 skill 约需 **50-100 MB** 磁盘空间（视 npm 缓存情况而定）。

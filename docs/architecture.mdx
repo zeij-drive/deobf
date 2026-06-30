@@ -1,0 +1,58 @@
+---
+title: 架构
+description: deobf-all 的调度器架构和层级设计
+---
+
+# 架构
+
+## 项目结构
+
+```
+deobf-all/
+├── README.md              # 使用说明与文档
+├── LICENSE                 # MIT 许可证
+├── install.sh              # macOS / Linux 自动安装脚本
+├── install.bat             # Windows 自动安装脚本
+└── deobf-all/
+    └── SKILL.md            # 调度 skill 本体
+```
+
+## Skill 层级架构
+
+```
+deobf-all (调度器)
+  │
+  ├─── P0 Skills（遇到相关目标时始终加载）
+  │    ├── code-obfuscation-deobfuscation  （原生二进制反混淆）
+  │    └── ast-deobfuscation               （JavaScript 反混淆）
+  │
+  ├─── P1 Skills（按需加载）
+  │    ├── vm-and-bytecode-reverse         （VM 保护）
+  │    ├── anti-debugging-techniques       （反调试绕过）
+  │    └── symbolic-execution-tools        （angr/Z3 自动化）
+  │
+  └─── P2 Skills（辅助增强）
+       ├── binary-protection-bypass         （保护绕过）
+       ├── ctf-reverse                      （CTF 方法论）
+       ├── anti-reversing-techniques        （反逆向规避）
+       └── deep-analysis                    （全面分类）
+```
+
+## 调度流程
+
+1. **激活**：用户调用 `/deobf-all` 或 `run_skill(name="deobf-all")`
+2. **全量加载**：通过 `read_skill` 并行加载全部 9 个子 skill 到 agent 上下文
+3. **分类**：根据目标文件类型和混淆特征进行分类
+4. **路由**：按照决策树选择最优子 skill 组合
+5. **执行**：按步骤应用反混淆工作流
+6. **验证**：确认反混淆结果的正确性和完整性
+
+## 设计原则
+
+| 原则 | 说明 |
+|------|------|
+| 统一入口 | 用户只需一个命令，无需记忆每个 skill |
+| 智能路由 | 根据目标特征自动选择，而非暴力加载 |
+| 分层优先级 | P0/P1/P2 分级，确保关键能力始终可用 |
+| 可扩展 | 新增子 skill 只需更新路由表 |
+| 渐进式处理 | 从静态到动态，从简单到复杂 |

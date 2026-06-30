@@ -1,0 +1,102 @@
+---
+title: 反混淆 obfuscator.io 处理的 JavaScript
+description: 使用 deobf-all 清理 obfuscator.io 混淆的 JS 代码
+---
+
+# 反混淆 obfuscator.io 处理的 JavaScript
+
+本示例演示如何使用 deobf-all 反混淆被 obfuscator.io 处理过的 JavaScript 代码。
+
+## 场景描述
+
+你有一个被 obfuscator.io 混淆的 JavaScript 文件，变量名被替换为 `_0x` 前缀标识符，字符串被提取到数组并加密，控制流被 `while + switch` 模式打平。
+
+## 操作步骤
+
+### 1. 调用 deobf-all
+
+在 Agent 中输入：
+
+```
+这个 JS 文件被 obfuscator.io 混淆了，能清理一下吗？
+```
+
+### 2. 调度器自动分类
+
+Agent 会自动：
+
+1. **加载 deobf-all** → 拉起全部 9 个子 skill
+2. **识别 JS 混淆** → 检测到 obfuscator.io 特征
+3. **路由到**：
+
+| 加载的 Skill | 用途 |
+|-------------|------|
+| `ast-deobfuscation` | 主力 — JS AST 反混淆 |
+| `code-obfuscation-deobfuscation` | 辅助 — 通用反混淆兜底 |
+
+### 3. AST 反混淆流水线
+
+```
+ast-deobfuscation
+    │
+    ▼
+detect-patterns.js
+    ├── 识别混淆器版本和配置
+    └── 确定适配策略
+    │
+    ▼
+Stage 1: 字符串还原
+    ├── 内联字符串表
+    └── 解码并替换所有引用
+    │
+    ▼
+Stage 2: 控制流还原
+    ├── 识别 while + switch 模式
+    ├── 内联 dispatcher
+    └── 重建原始控制流
+    │
+    ▼
+Stage 3: 标识符还原
+    ├── 反混淆 _0x 标识符
+    └── 基于语义推断合理变量名
+    │
+    ▼
+Stage 4: 清理
+    ├── 移除虚假常量分支
+    ├── 简化冗余表达式
+    └── 格式化输出
+    │
+    ▼
+验证：重新解析 AST，确认语法正确
+```
+
+### 4. 结果
+
+反混淆前：
+
+```javascript
+var _0x1a2b = ['log', 'Hello', 'World'];
+(function(_0x3c4d, _0x5e6f) {
+    var _0x7g8h = function(_0x9i0j) {
+        while (!![]) {
+            switch (_0x9i0j['\x6b\x65\x79']) {
+                case '0': console[_0x1a2b[0]](_0x1a2b[1]); continue;
+                case '1': console[_0x1a2b[0]](_0x1a2b[2]); continue;
+            }
+            break;
+        }
+    };
+    // ...
+})();
+```
+
+反混淆后：
+
+```javascript
+console.log('Hello');
+console.log('World');
+```
+
+<Tip>
+每次 AST 变换后都会重新解析，确保代码可分析性逐步提升，且每一步都是可回退的。
+</Tip>

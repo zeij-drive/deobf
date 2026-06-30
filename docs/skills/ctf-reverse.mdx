@@ -1,0 +1,50 @@
+---
+title: ctf-reverse
+description: CTF 逆向工程挑战方法论
+---
+
+# ctf-reverse
+
+<Info>
+**来源**: [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) &nbsp;·&nbsp; **安装量**: 5.8K &nbsp;·&nbsp; **优先级**: P2
+</Info>
+
+CTF 逆向工程挑战的专项方法论 Skill。
+
+## CTF 逆向方法论
+
+### 1. 初步侦察
+- 文件类型识别（`file` 命令）
+- 字符串搜索（`strings` / `rabin2 -z`）
+- 符号信息（导入/导出表）
+- 保护机制检查（checksec）
+
+### 2. 静态分析
+- 反汇编与伪代码生成
+- 关键函数定位
+- 算法识别
+- 数据结构恢复
+
+### 3. 动态分析
+- 断点调试验证假设
+- 输入跟踪与数据流分析
+- 逆向约束提取
+
+### 4. 解题
+- 算法还原或约束求解
+- Flag 提取
+
+## 常见 CTF 类型
+
+| 类型 | 说明 | 推荐辅助 Skill |
+|------|------|----------------|
+| 简单加壳 | UPX 等简单脱壳 | `code-obfuscation-deobfuscation` |
+| 自定义 VM | 手写 VM interpreter | `vm-and-bytecode-reverse` |
+| 密码学 | 自定义加密算法 | `symbolic-execution-tools` |
+| 反调试 | 反调试 + 逻辑混淆 | `anti-debugging-techniques` |
+| 栈题 | pwn + rev 混合 | `binary-protection-bypass` |
+
+## 路由触发条件
+
+- 用户明确说明是 CTF 挑战
+- 目标具有典型的 CTF 结构（flag 格式、简化混淆等）

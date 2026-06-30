@@ -1,0 +1,43 @@
+---
+title: ast-deobfuscation
+description: JavaScript AST 反混淆 — 模式检测、流水线、站点适配
+---
+
+# ast-deobfuscation
+
+<Info>
+**来源**: [lwjjike/xbsreverseskill](https://github.com/lwjjike/xbsreverseskill) &nbsp;·&nbsp; **安装量**: 35 &nbsp;·&nbsp; **优先级**: P0 (JS 目标)
+</Info>
+
+基于 AST（抽象语法树）的 JavaScript 专项反混淆 Skill。
+
+## 支持的混淆类型
+
+| 混淆技术 | 说明 |
+|---------|------|
+| `_0x` 标识符混淆 | 变量名替换为不可读的十六进制标识符 |
+| 字符串表 | 将字符串提取到数组，运行时通过解码函数访问 |
+| 自执行解码包装 | IIFE 包裹的解码器 + 调用 |
+| Dispatcher 对象 | 用键值对映射替代直接的函数调用 |
+| 虚假常量分支 | 注入永假分支增加代码复杂度 |
+| `while/for + switch` 控制流 | 将正常流程转为状态机调度 |
+| obfuscator.io 全家桶 | 支持主流配置的反混淆 |
+
+## 工作流程
+
+1. **模式检测** — 运行 `scripts/detect-patterns.js` 识别混淆器和目标站点/框架
+2. **流水线处理** — 通过多阶段 AST 变换逐步还原代码
+3. **站点适配** — 针对特定框架的反混淆策略
+4. **验证** — 重新解析 AST 确认可读性和正确性
+
+## 路由触发条件
+
+当调度器检测到以下任一条件时自动加载：
+- 目标为 JavaScript 代码
+- 检测到 `_0x` 风格标识符
+- 存在 `while + switch` 控制流模式
+- obfuscator.io 特征
+
+<Note>
+此 skill 对 JavaScript 目标是 **P0 优先级** — 遇到 JS 混淆时始终加载。
+</Note>

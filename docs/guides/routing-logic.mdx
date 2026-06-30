@@ -1,0 +1,61 @@
+---
+title: 路由逻辑
+description: deobf-all 如何根据目标类型自动选择最优 skill 组合
+---
+
+# 路由逻辑
+
+deobf-all 内置决策树，根据目标类型和混淆特征自动路由到最优子 skill 组合。
+
+## 决策树
+
+```
+┌─ 目标是否为混淆代码？
+│
+├─ 原生二进制 (ELF/PE/Mach-O)
+│   ├─ 有 VM 保护？    → code-obfuscation-deobfuscation + vm-and-bytecode-reverse
+│   ├─ 有反调试？      → + anti-debugging-techniques
+│   ├─ 需要约束求解？  → + symbolic-execution-tools
+│   ├─ 有二进制保护？  → + binary-protection-bypass
+│   └─ 通用反混淆？    → code-obfuscation-deobfuscation
+│
+├─ JavaScript 代码
+│   ├─ 已知站点/框架？ → ast-deobfuscation（先用 detect-patterns.js）
+│   ├─ JS 控制流扁平化？→ ast-deobfuscation 流水线
+│   └─ 通用 JS 混淆？  → ast-deobfuscation + code-obfuscation-deobfuscation
+│
+├─ DotNet/Java/Python 字节码
+│   └─ vm-and-bytecode-reverse + symbolic-execution-tools
+│
+├─ CTF 挑战
+│   └─ ctf-reverse + deep-analysis + 相关子 skill
+│
+└─ 未知 / 需要分类
+    └─ deep-analysis 先行，然后根据发现结果路由
+```
+
+## 路由示例
+
+| 目标类型 | 主要 Skill | 辅助 Skill |
+|---------|-----------|-----------|
+| VMProtect 保护的原生二进制 | `code-obfuscation-deobfuscation` + `vm-and-bytecode-reverse` | `+ anti-debugging-techniques` |
+| OLLVM 控制流扁平化 | `code-obfuscation-deobfuscation` | `+ symbolic-execution-tools` |
+| 压缩/加壳 + 反逆向二进制 | `code-obfuscation-deobfuscation` | `+ anti-reversing-techniques` + `binary-protection-bypass` |
+| 重度混淆的 JavaScript | `ast-deobfuscation` | `+ code-obfuscation-deobfuscation` |
+| DotNet/Java/Python 字节码 | `vm-and-bytecode-reverse` | `+ symbolic-execution-tools` |
+| CTF 逆向挑战 | `ctf-reverse` + `deep-analysis` | `+ 相关子 skill` |
+| 未知类型 | `deep-analysis` | `→ 根据发现结果再路由` |
+
+## Skill 优先级
+
+调度器为子 skill 定义了三级优先级：
+
+| 优先级 | 含义 | Skill |
+|--------|------|-------|
+| **P0** | 遇到相关目标时始终加载 | `code-obfuscation-deobfuscation`、`ast-deobfuscation` |
+| **P1** | 按需加载 | `vm-and-bytecode-reverse`、`anti-debugging-techniques`、`symbolic-execution-tools` |
+| **P2** | 辅助增强 | `binary-protection-bypass`、`ctf-reverse`、`anti-reversing-techniques`、`deep-analysis` |
+
+<Tip>
+P0 skill 在调度器激活时会无条件加载到上下文中。P1/P2 skill 根据路由决策按需激活。
+</Tip>

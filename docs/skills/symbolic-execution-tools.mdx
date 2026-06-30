@@ -1,0 +1,41 @@
+---
+title: symbolic-execution-tools
+description: angr/Z3/Triton 自动化反混淆 — 约束求解、仿真
+---
+
+# symbolic-execution-tools
+
+<Info>
+**来源**: [yaklang/hack-skills](https://github.com/yaklang/hack-skills) &nbsp;·&nbsp; **安装量**: 1.6K &nbsp;·&nbsp; **优先级**: P1
+</Info>
+
+利用符号执行引擎进行自动化反混淆和约束求解。
+
+## 支持的工具
+
+| 工具 | 用途 |
+|------|------|
+| **angr** | 二进制符号执行平台，支持多架构 |
+| **Z3** | SMT 求解器，处理 Opaque Predicates 等约束问题 |
+| **Triton** | 动态符号执行框架，支持 taint 分析 |
+
+## 核心能力
+
+### Opaque Predicates 求解
+
+利用 Z3 对混淆中插入的永真/永假条件进行自动求解，识别并移除虚假分支。
+
+### 仿真脱壳
+
+使用 angr 的仿真执行（SimExe）在不运行恶意代码的情况下模拟脱壳过程。
+
+### 约束传播
+
+通过符号执行追踪数据流，恢复被混淆中断的变量关系。
+
+## 路由触发条件
+
+- OLLVM 控制流扁平化（需要求解状态变量）
+- Opaque Predicates 无法通过模式匹配识别
+- 需要仿真执行来提取被保护的数据
+- 静态分析受阻，需要动态信息辅助

@@ -1,0 +1,87 @@
+---
+title: 解决 CTF 逆向工程挑战
+description: 使用 deobf-all 解决 CTF 中的自定义 VM 逆向题
+---
+
+# 解决 CTF 逆向工程挑战
+
+本示例演示如何使用 deobf-all 解决 CTF 竞赛中的逆向工程挑战题。
+
+## 场景描述
+
+你遇到一道 CTF 逆向题 — 目标是一个包含自定义 VM 的 ELF 二进制文件，flag 被编码为 VM 字节码。
+
+## 操作步骤
+
+### 1. 调用 deobf-all
+
+在 Agent 中输入：
+
+```
+帮我解这个 CTF rev 挑战题 — 看起来是一个自定义 VM。
+```
+
+### 2. 调度器自动分类
+
+Agent 会自动：
+
+1. **加载 deobf-all** → 拉起全部 9 个子 skill
+2. **识别 CTF + VM** → 同时检测到两种特征
+3. **路由到**：
+
+| 加载的 Skill | 用途 |
+|-------------|------|
+| `ctf-reverse` | CTF 方法论引导 |
+| `deep-analysis` | 全面分类 |
+| `vm-and-bytecode-reverse` | VM 分析 |
+| `code-obfuscation-deobfuscation` | 辅助反混淆（如需要） |
+| `symbolic-execution-tools` | 约束求解（提取 flag） |
+
+### 3. 分析流程
+
+```
+ctf-reverse 方法论
+    │
+    ▼
+Step 1: 侦察
+    ├── file → ELF 64-bit
+    ├── strings → 无明显 flag
+    ├── checksec → 部分 RELRO, NX enabled
+    └── 熵值分析 → 正常范围（无加壳）
+    │
+    ▼
+Step 2: 静态分析
+    ├── main() → 读取输入，调用 VM 执行
+    ├── 识别 VM 结构：handler table + dispatcher
+    └── VM 调度器：switch on opcode
+    │
+    ▼
+Step 3: VM 分析 (vm-and-bytecode-reverse)
+    ├── 提取 handler table
+    ├── 映射 opcode → 操作语义
+    │   ├── 0x01: PUSH
+    │   ├── 0x02: POP
+    │   ├── 0x03: XOR
+    │   ├── 0x04: CMP
+    │   └── 0x05: JNZ
+    └── 理解 VM 程序逻辑
+    │
+    ▼
+Step 4: 约束求解 (symbolic-execution-tools)
+    ├── 提取 CMP 条件
+    ├── 构建 Z3 约束
+    └── 求解 → flag{...}
+    │
+    ▼
+验证：用 VM 执行求解结果，确认输出 "Correct"
+```
+
+### 4. 提交 Flag
+
+```
+flag{vm_r3v3rs1ng_1s_fun}
+```
+
+<Tip>
+CTF 题目经常综合多种技术。先让 `ctf-reverse` 建立分析框架，再根据发现路由到具体 Skill。
+</Tip>

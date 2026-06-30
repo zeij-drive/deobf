@@ -1,0 +1,66 @@
+---
+title: 手动安装
+description: 逐个手动安装子 skill 和调度器
+---
+
+# 手动安装
+
+如果你想更精细地控制安装过程，可以逐个手动安装每个 skill。
+
+## 安装子 Skill
+
+依次执行以下命令：
+
+```bash
+# ── 核心反混淆 ──
+npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
+
+# ── 辅助反混淆（yaklang 生态）──
+npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
+npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y
+npx skills add yaklang/hack-skills --skill symbolic-execution-tools -g -y
+npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y
+
+# ── 补充逆向工程 ──
+npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
+npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
+npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
+```
+
+## 安装调度器 Skill
+
+```bash
+mkdir -p ~/.agents/skills/deobf-all
+cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
+```
+
+<Note>
+`-g` 参数表示全局安装。如果只想安装到当前项目，去掉 `-g` 即可。
+</Note>
+
+## 仅安装部分 Skill
+
+如果你只需要特定方向的技能，可以只安装相关子 skill：
+
+<Accordion>
+  <AccordionItem title="仅需 JavaScript 反混淆">
+    ```bash
+    npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
+    npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+    ```
+  </AccordionItem>
+  <AccordionItem title="仅需原生二进制反混淆">
+    ```bash
+    npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+    npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
+    npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y
+    ```
+  </AccordionItem>
+  <AccordionItem title="仅需 CTF 逆向">
+    ```bash
+    npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
+    npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
+    ```
+  </AccordionItem>
+</Accordion>

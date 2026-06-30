@@ -1,0 +1,69 @@
+---
+title: 快速开始
+description: 三分钟安装并运行 deobf-all
+---
+
+# 快速开始
+
+## 第一步：克隆仓库
+
+```bash
+git clone https://github.com/YOUR_USERNAME/deobf-all.git
+cd deobf-all
+```
+
+## 第二步：运行安装脚本
+
+<Tabs>
+  <Tab title="macOS / Linux">
+    ```bash
+    chmod +x install.sh
+    ./install.sh
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```bat
+    install.bat
+    ```
+  </Tab>
+</Tabs>
+
+安装脚本将自动完成：
+- 通过 `npx skills add` 全局安装全部 **9 个子 skill**
+- 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
+- 如果在当前 workspace 中运行，也会安装到本地 skill 路径
+
+## 第三步：使用
+
+在支持的 Agent 平台中直接调用：
+
+<CodeGroup>
+  ```text Reasonix / Claude Code
+  /deobf-all
+  ```
+  ```python 编程方式
+  run_skill(name="deobf-all")
+  ```
+</CodeGroup>
+
+## 安装选项
+
+安装脚本支持以下参数：
+
+| 参数 | 说明 |
+|------|------|
+| `--local` | 将技能安装到当前 workspace，不影响全局目录 |
+| `--dry-run` | 只预览将要安装的技能，不真正执行安装 |
+| `--help` | 显示帮助信息 |
+
+```bash
+# 安装到当前项目（不影响全局）
+./install.sh --local
+
+# 预览安装内容
+./install.sh --dry-run
+```
+
+<Note>
+如果这是你的首次使用，建议先运行 `--dry-run` 预览，确认无误后再执行安装。
+</Note>

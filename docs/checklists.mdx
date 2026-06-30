@@ -1,0 +1,58 @@
+---
+title: 反混淆检查清单
+description: 原生二进制和 JavaScript 的反混淆检查清单
+---
+
+# 反混淆检查清单
+
+## 原生二进制反混淆
+
+<Checklist>
+  <ChecklistItem id="native-1" label="识别保护器/加壳器">
+    使用 `file`、Detect-It-Easy、PEiD 等工具确定目标使用的保护方案
+  </ChecklistItem>
+  <ChecklistItem id="native-2" label="检查反调试">
+    加载 `anti-debugging-techniques` skill，识别并绕过反调试手段
+  </ChecklistItem>
+  <ChecklistItem id="native-3" label="识别混淆类型">
+    确定具体混淆技术：CFF、opaque predicates、字符串加密、import 隐藏等
+  </ChecklistItem>
+  <ChecklistItem id="native-4" label="应用静态反混淆">
+    使用脚本和模式替换进行初步还原
+  </ChecklistItem>
+  <ChecklistItem id="native-5" label="受阻时求助符号执行">
+    如静态方法受阻，加载 `symbolic-execution-tools` 进行自动约束求解
+  </ChecklistItem>
+  <ChecklistItem id="native-6" label="VM 保护时分析 VM">
+    如检测到 VM 保护，加载 `vm-and-bytecode-reverse` 进行 VM 分析
+  </ChecklistItem>
+  <ChecklistItem id="native-7" label="验证反混淆输出">
+    对比原始行为，确认功能等价性
+  </ChecklistItem>
+</Checklist>
+
+## JavaScript 反混淆
+
+<Checklist>
+  <ChecklistItem id="js-1" label="运行模式检测">
+    执行 `detect-patterns.js`（来自 `ast-deobfuscation`）识别混淆器和目标框架
+  </ChecklistItem>
+  <ChecklistItem id="js-2" label="识别混淆家族">
+    确定 obfuscator.io / JSFuck / 自定义混淆器及配置
+  </ChecklistItem>
+  <ChecklistItem id="js-3" label="应用匹配的流水线">
+    从 `ast-deobfuscation` 选择对应流水线逐步还原
+  </ChecklistItem>
+  <ChecklistItem id="js-4" label="处理控制流扁平化">
+    内联 dispatcher，还原 `while + switch` 控制流
+  </ChecklistItem>
+  <ChecklistItem id="js-5" label="处理字符串加密">
+    执行 `inline-literals` pass，解密并还原字符串引用
+  </ChecklistItem>
+  <ChecklistItem id="js-6" label="每次变换后重新解析">
+    每个 AST 变换阶段后重新解析，确保代码有效性
+  </ChecklistItem>
+  <ChecklistItem id="js-7" label="验证输出可读性与正确性">
+    确认反混淆代码可读且功能等价
+  </ChecklistItem>
+</Checklist>

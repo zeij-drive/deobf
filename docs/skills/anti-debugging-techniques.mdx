@@ -1,0 +1,38 @@
+---
+title: anti-debugging-techniques
+description: 反调试检测与绕过 — ptrace、PEB、时序攻击、TLS、VEH
+---
+
+# anti-debugging-techniques
+
+<Info>
+**来源**: [yaklang/hack-skills](https://github.com/yaklang/hack-skills) &nbsp;·&nbsp; **安装量**: 1.6K &nbsp;·&nbsp; **优先级**: P1
+</Info>
+
+识别和绕过反调试技术的专项 Skill。
+
+## 支持的反调试技术
+
+| 类别 | 技术 | 说明 |
+|------|------|------|
+| API 检测 | `IsDebuggerPresent` | Windows 经典调试器检测 |
+| API 检测 | `CheckRemoteDebuggerPresent` | 远程调试器检测 |
+| API 检测 | `NtQueryInformationProcess` | 进程信息查询 |
+| Unix | `ptrace(PTRACE_TRACEME)` | Linux 反调试经典手段 |
+| PEB 检测 | `BeingDebugged` / `NtGlobalFlag` | 读取进程环境块标志 |
+| 时序攻击 | `rdtsc` / `GetTickCount` | 通过时间差判断是否被调试 |
+| 回调 | TLS Callback / VEH | 在入口点之前执行检测 |
+| 硬件断点 | Dr0-Dr3 寄存器检测 | 检查硬件断点寄存器 |
+
+## 绕过策略
+
+- **Patch 方式**：直接 NOP 掉检测代码
+- **Hook 方式**：劫持检测 API 返回正常值
+- **环境伪装**：修改 PEB 标志、调整时序
+- **调试器规避**：使用反反调试插件或无侵入式调试
+
+## 路由触发条件
+
+- 检测到反调试 API 调用
+- 程序在调试器下行为异常
+- 检测到 TLS Callback 或 VEH 注册

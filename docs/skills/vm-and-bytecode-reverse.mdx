@@ -1,0 +1,40 @@
+---
+title: vm-and-bytecode-reverse
+description: VM 保护器分析 — VMProtect/Themida、自定义 VM 调度器
+---
+
+# vm-and-bytecode-reverse
+
+<Info>
+**来源**: [yaklang/hack-skills](https://github.com/yaklang/hack-skills) &nbsp;·&nbsp; **安装量**: 1.6K &nbsp;·&nbsp; **优先级**: P1
+</Info>
+
+专注于虚拟机（VM）保护器和字节码逆向的 Skill。
+
+## 支持的保护方案
+
+| 保护方案 | 类型 | 说明 |
+|---------|------|------|
+| VMProtect | 商业 VM 保护器 | 代码虚拟化，自定义 VM 指令集 |
+| Themida | 商业 VM 保护器 | 类似 VMProtect，带 Mark（标记）系统 |
+| 自定义 VM 调度器 | 自研 | 手写的 VM interpreter，常见于 CTF |
+| DotNet 字节码 | .NET | IL 代码分析与还原 |
+| Java 字节码 | JVM | 字节码反混淆与还原 |
+| Python 字节码 | CPython | `.pyc` 反编译与还原 |
+
+## 核心能力
+
+- **Opcode 映射**：识别 VM handler 与原始指令的对应关系
+- **调度器分析**：理解 VM dispatcher 的分发逻辑
+- **字节码提取**：从保护器中提取原始字节码
+- **语义还原**：将 VM 指令序列翻译回高语义代码
+
+## 路由触发条件
+
+- 检测到 VMProtect / Themida 特征
+- 识别到 VM dispatcher 结构（handler table + dispatcher loop）
+- 目标为 .NET / Java / Python 字节码
+
+<Note>
+常与 `anti-debugging-techniques` 和 `code-obfuscation-deobfuscation` 协同使用，形成完整 VM 分析链路。
+</Note>

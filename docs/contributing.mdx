@@ -1,0 +1,36 @@
+---
+title: 贡献指南
+description: 如何为 deobf-all 贡献代码和改进
+---
+
+# 贡献指南
+
+欢迎为 deobf-all 贡献！以下是你可以参与的方向。
+
+## 贡献方向
+
+| 方向 | 说明 | 难度 |
+|------|------|------|
+| 新增混淆类型覆盖 | 例如 .NET 混淆器、Android dex 保护器 | 🔴 高 |
+| 改进路由启发式算法 | 更智能的分类和路由逻辑 | 🟡 中 |
+| 额外子 skill 集成 | 接入新的反混淆/逆向 skill | 🟡 中 |
+| Bug 修复和边界情况 | 修复已知的边界问题 | 🟢 低 |
+| 文档改进 | 补充示例、润色文案 | 🟢 低 |
+
+## 提交贡献
+
+1. **Fork** 仓库
+2. 创建特性分支：`git checkout -b feature/your-feature`
+3. 提交修改：`git commit -m "Add: your feature"`
+4. 推送分支：`git push origin feature/your-feature`
+5. 提交 **Pull Request**
+
+## 开源说明
+
+本仓库刻意设计为调度 skill 可作为普通的 Skill 包复用：
+
+- 可复用的入口点是 `deobf-all/SKILL.md`
+- 安装脚本在安装引用的子 skill 之前会先将其复制到本地 agent skill 目录
+- 如果你想将其发布为公开的 skill 仓库，保持当前的 `deobf-all/` 文件夹结构
+- 调度器本身与仓库的 MIT 许可证兼容
+- 引用的子 skill 保留各自上游的许可证

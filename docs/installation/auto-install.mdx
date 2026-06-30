@@ -1,0 +1,96 @@
+---
+title: 自动安装（推荐）
+description: 使用安装脚本一键安装全部技能
+---
+
+# 自动安装
+
+自动安装脚本是推荐的安装方式，一条命令即可完成全部 9 个子 skill 和调度器 skill 的安装。
+
+## 使用方法
+
+<Tabs>
+  <Tab title="macOS / Linux">
+    ```bash
+    chmod +x install.sh
+    ./install.sh
+    ```
+  </Tab>
+  <Tab title="Windows">
+    ```bat
+    install.bat
+    ```
+  </Tab>
+</Tabs>
+
+## 安装过程
+
+脚本将按以下顺序执行：
+
+1. **检查 npx** — 确认 Node.js 环境可用
+2. **安装调度器** — 将 `deobf-all/SKILL.md` 复制到 `~/.agents/skills/deobf-all/`
+3. **安装子 skill** — 逐个通过 `npx skills add` 安装 9 个子 skill
+4. **输出摘要** — 显示安装成功/失败数量
+
+## 安装参数
+
+```bash
+./install.sh [选项]
+```
+
+| 选项 | 说明 |
+|------|------|
+| （无参数） | 全局安装全部skills |
+| `--local` | 安装到当前项目目录，不写入全局 skill 目录 |
+| `--dry-run` | 仅展示将要执行的安装命令，不实际安装 |
+| `--help` / `-h` | 显示帮助信息 |
+
+### `--local` 模式
+
+适用于不想污染全局 skill 目录的场景，例如在特定项目中使用：
+
+```bash
+./install.sh --local
+```
+
+### `--dry-run` 模式
+
+在正式安装前预览安装内容：
+
+```bash
+./install.sh --dry-run
+```
+
+输出示例：
+```
+  🔍 [DRY-RUN] Would install: deobf-all (dispatcher skill from local repo)
+  🔍 [DRY-RUN] npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+  🔍 [DRY-RUN] npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
+  ...
+```
+
+## 故障排除
+
+<Accordion>
+  <AccordionItem title="npx not found">
+    确保 Node.js >= 18 已安装，并且在 PATH 中。可通过 `node --version` 检查。
+    
+    安装 Node.js：[https://nodejs.org/](https://nodejs.org/)
+  </AccordionItem>
+  <AccordionItem title="某个 skill 安装失败">
+    脚本会自动重试一次（使用 `--full-depth` 参数）。如果仍然失败，脚本会输出手动安装命令，你可以手动执行：
+
+    ```bash
+    npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+    ```
+  </AccordionItem>
+  <AccordionItem title="权限问题（macOS / Linux）">
+    如果遇到权限错误，确保脚本有执行权限：
+    
+    ```bash
+    chmod +x install.sh
+    ```
+    
+    如果 `~/.agents/skills/` 目录无写入权限，检查目录所有者。
+  </AccordionItem>
+</Accordion>

@@ -1,0 +1,73 @@
+---
+title: 反混淆 VMProtect 保护的二进制文件
+description: 使用 deobf-all 分析 VMProtect 保护的原生二进制
+---
+
+# 反混淆 VMProtect 保护的二进制文件
+
+本示例演示如何使用 deobf-all 反混淆一个被 VMProtect 保护的 Windows PE 文件。
+
+## 场景描述
+
+你有一个 Windows PE 可执行文件，被 VMProtect 保护。程序在调试器中会异常退出，且核心逻辑被虚拟化。
+
+## 操作步骤
+
+### 1. 调用 deobf-all
+
+在 Agent 中输入：
+
+```
+我有一个 Windows PE 文件，被 VMProtect 保护了。帮我反混淆。
+```
+
+### 2. 调度器自动分类
+
+Agent 会自动执行以下步骤：
+
+1. **加载 deobf-all** → 同时拉起全部 9 个子 skill
+2. **识别 VMProtect** → 检测到 VM 保护器特征
+3. **路由到最优组合**：
+
+| 加载的 Skill | 用途 |
+|-------------|------|
+| `code-obfuscation-deobfuscation` | 核心反混淆 |
+| `vm-and-bytecode-reverse` | VM 分析 |
+| `anti-debugging-techniques` | 反调试绕过 |
+
+### 3. 分析流程
+
+```
+调度器分类 → 检测到 VMProtect
+    │
+    ▼
+anti-debugging-techniques
+    ├── 识别反调试手段（IsDebuggerPresent, TLS callback...）
+    └── 绕过反调试
+    │
+    ▼
+vm-and-bytecode-reverse
+    ├── 识别 VM 入口点
+    ├── 提取 handler table
+    ├── 映射 opcode → 原始指令
+    └── 还原虚拟化的代码
+    │
+    ▼
+code-obfuscation-deobfuscation
+    ├── 处理残余的 CFF / opaque predicates
+    ├── 解密加密字符串
+    └── 清理反反汇编
+    │
+    ▼
+验证：对比原始行为，确认功能等价
+```
+
+### 4. 结果验证
+
+- 将反混淆输出与原始程序行为对比
+- 检查是否有残余 VM 保护段
+- 确认核心逻辑完整性
+
+<Tip>
+VMProtect 经常与反调试叠加使用。如果发现程序在调试器下异常行为，先处理反调试层，再进入 VM 分析。
+</Tip>

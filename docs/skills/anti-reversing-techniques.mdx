@@ -1,0 +1,40 @@
+---
+title: anti-reversing-techniques
+description: 反逆向技术识别与规避
+---
+
+# anti-reversing-techniques
+
+<Info>
+**来源**: [wshobson/agents](https://github.com/wshobson/agents) &nbsp;·&nbsp; **安装量**: 7.6K &nbsp;·&nbsp; **优先级**: P2
+</Info>
+
+全面的反逆向技术识别与规避指南。
+
+## 识别的反逆向技术
+
+| 类别 | 技术 | 影响 |
+|------|------|------|
+| 反调试 | 调试器检测 API | 阻止动态分析 |
+| 反注入 | DLL 注入检测 | 阻止 hooking 和 patching |
+| 反模拟 | 环境检测 | 阻止沙箱/仿真执行 |
+| 反转储 | 内存转储检测 | 阻止内存提取 |
+| 混淆 | 代码/数据混淆 | 降低可读性 |
+| 完整性 | 校验和 / Hash | 检测代码修改 |
+
+## 与其他 Skill 的协作
+
+此 Skill 侧重于 **识别** 反逆向技术，而具体的 **绕过** 操作会路由到对应 Skill：
+
+| 识别到 | 路由到 |
+|--------|--------|
+| 反调试技术 | `anti-debugging-techniques` |
+| 代码混淆 | `code-obfuscation-deobfuscation` |
+| VM 保护 | `vm-and-bytecode-reverse` |
+| 二进制保护 | `binary-protection-bypass` |
+
+## 路由触发条件
+
+- 目标出现异常行为（在分析工具下崩溃、结果不一致等）
+- 怀疑存在反逆向层但不确定具体类型
+- 需要全面的反逆向技术清单做排除

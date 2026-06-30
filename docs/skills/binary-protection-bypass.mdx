@@ -1,0 +1,37 @@
+---
+title: binary-protection-bypass
+description: 二进制保护机制绕过 — ASLR/NX/PIE/Canary/RELRO
+---
+
+# binary-protection-bypass
+
+<Info>
+**来源**: [yaklang/hack-skills](https://github.com/yaklang/hack-skills) &nbsp;·&nbsp; **安装量**: 1.6K &nbsp;·&nbsp; **优先级**: P2
+</Info>
+
+处理与混淆经常叠加使用的二进制保护机制。
+
+## 支持的保护机制
+
+| 保护机制 | 全称 | 说明 |
+|---------|------|------|
+| ASLR | Address Space Layout Randomization | 地址空间随机化 |
+| NX/DEP | No-eXecute / Data Execution Prevention | 数据不可执行 |
+| PIE | Position-Independent Executable | 位置无关可执行文件 |
+| Stack Canary | Stack Cookie / Stack Guard | 栈溢出检测 |
+| RELRO | Relocation Read-Only | GOT 表只读保护 |
+| Full RELRO | Full Relocation Read-Only | 完全 GOT 只读 |
+
+## 在反混淆中的角色
+
+二进制保护机制本身不是混淆，但它们经常与混淆器协同使用：
+
+- **RELRO + 混淆**：阻止通过 GOT hooking 的动态分析
+- **NX + VM**：使得代码注入更困难，限制脱壳策略
+- **ASLR + PIE**：增加静态预测地址的难度
+
+## 路由触发条件
+
+- 目标二进制启用了多层保护机制
+- 反混淆需要先处理保护限制才能继续
+- 检测到 RELRO 阻止了动态 hook 策略
