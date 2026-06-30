@@ -52,6 +52,7 @@ The script will:
 - Install all 9 sub-skills globally via `npx skills add`
 - Copy the `deobf-all` dispatcher skill to `~/.agents/skills/`
 - Install the dispatcher into the local Reasonix skill path when running in this workspace
+- Show `--local` and `--dry-run` options for safer installs
 
 ### Option 2: Manual Install
 
@@ -211,6 +212,12 @@ If you want to publish it as a public skill repository, keep the current `deobf-
 3. 先让调度 skill 做目标归类，再由它加载对应的子 skill 组合。
 4. 对 JS 混淆优先走 `ast-deobfuscation`，对 VM / 保护壳优先走 `vm-and-bytecode-reverse` + `anti-debugging-techniques`，对未知样本先走 `deep-analysis`。
 5. 如果是本地 workspace 内的项目，建议用 `--local` 模式做一次试装，确认不会污染全局 skill 目录。
+
+## 中文选项
+
+- `--local`：把技能安装到当前 workspace，不影响全局目录。
+- `--dry-run`：只预览将要安装的 skills，不真正执行安装。
+- `/deobf-all`：在支持的 agent 中直接调用统一调度 skill。
 
 ## 📄 License
 
