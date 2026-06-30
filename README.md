@@ -51,6 +51,7 @@ install.bat
 The script will:
 - Install all 9 sub-skills globally via `npx skills add`
 - Copy the `deobf-all` dispatcher skill to `~/.agents/skills/`
+- Install the dispatcher into the local Reasonix skill path when running in this workspace
 
 ### Option 2: Manual Install
 
@@ -196,6 +197,20 @@ Contributions are welcome! Areas of interest:
 - Documentation improvements
 
 Please open an issue or submit a PR.
+
+## Open Source Notes
+
+This repository is intentionally structured so the dispatcher skill can be reused as a normal Skill package. The reusable entry point is `deobf-all/SKILL.md`, and the install scripts copy it into the local agent skill directory before installing the referenced sub-skills.
+
+If you want to publish it as a public skill repository, keep the current `deobf-all/` folder layout and point `install.sh` / `install.bat` at that path. The dispatcher itself is license-compatible with the MIT repository license; the referenced sub-skills keep their upstream licenses.
+
+## 使用方案
+
+1. 运行 `install.sh` 或 `install.bat`，自动安装所有依赖 skills 和 `deobf-all` 调度 skill。
+2. 在支持的 agent 里直接调用 `/deobf-all`，或用 `run_skill(name="deobf-all")`。
+3. 先让调度 skill 做目标归类，再由它加载对应的子 skill 组合。
+4. 对 JS 混淆优先走 `ast-deobfuscation`，对 VM / 保护壳优先走 `vm-and-bytecode-reverse` + `anti-debugging-techniques`，对未知样本先走 `deep-analysis`。
+5. 如果是本地 workspace 内的项目，建议用 `--local` 模式做一次试装，确认不会污染全局 skill 目录。
 
 ## 📄 License
 
