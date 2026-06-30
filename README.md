@@ -1,6 +1,6 @@
-# 🛡️ deobf-all — Unified Deobfuscation Skill Suite for AI Agents
+# 🛡️ deobf-all — AI Agent 统一反混淆技能套件
 
-> **One command to load the entire deobfuscation arsenal.** A master dispatcher skill that pulls in 9 specialized reverse-engineering & deobfuscation sub-skills, then routes to the right combination based on your target.
+> **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 9 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills Standard](https://img.shields.io/badge/Agent%20Skills-Standard-blue)](https://agentskills.io)
@@ -8,56 +8,56 @@
 
 ---
 
-## 📖 What is this?
+## 📖 这是什么？
 
-**deobf-all** is an Agent Skill that acts as a unified entry point for deobfuscation workflows. Instead of manually loading individual skills for different obfuscation types, you invoke `deobf-all` once and it:
+**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一入口。你不需要为不同的混淆类型手动加载各自的 skill，只需调用一次 `deobf-all`，它就会：
 
-1. **Loads all 9 sub-skills** into the agent's context simultaneously
-2. **Triages your target** (native binary, JavaScript, bytecode, CTF, unknown)
-3. **Routes to the optimal skill combination** for the specific obfuscation type
-4. **Guides the full deobfuscation workflow** from triage → analysis → deobfuscation → validation
+1. **同时加载全部 9 个子 skill** 到 agent 上下文中
+2. **对你的目标进行分类**（原生二进制、JavaScript、字节码、CTF、未知类型）
+3. **路由到最优 skill 组合**，针对具体的混淆类型
+4. **引导完整的反混淆工作流**：分类 → 分析 → 反混淆 → 验证
 
-## 🧰 Skill Inventory
+## 🧰 Skill 清单
 
-| # | Skill | Source | Installs | What It Does |
-|---|-------|--------|----------|-------------|
-| 1 | **code-obfuscation-deobfuscation** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.8K | Core: CFF, opaque predicates, string encrypt, import hiding, anti-disasm |
-| 2 | **ast-deobfuscation** | [lwjjike/xbsreverseskill](https://github.com/lwjjike/xbsreverseskill) | 35 | JavaScript AST: pattern detection, pipeline, site adapters |
-| 3 | **vm-and-bytecode-reverse** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | VM protectors: VMProtect/Themida, custom VM dispatcher |
-| 4 | **anti-debugging-techniques** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | Anti-debug: ptrace, PEB, timing, TLS, VEH + bypass |
-| 5 | **symbolic-execution-tools** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | angr/Z3/Triton: automated constraint solving, emulation |
-| 6 | **binary-protection-bypass** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | ASLR/NX/PIE/Canary/RELRO bypass |
-| 7 | **ctf-reverse** | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | 5.8K | CTF reverse engineering methodology |
-| 8 | **anti-reversing-techniques** | [wshobson/agents](https://github.com/wshobson/agents) | 7.6K | Anti-reversing identification & circumvention |
-| 9 | **deep-analysis** | [cyberkaida/reverse-engineering-assistant](https://github.com/cyberkaida/reverse-engineering-assistant) | 345 | Deep reverse engineering triage |
+| # | Skill | 来源 | 安装量 | 功能 |
+|---|-------|------|--------|------|
+| 1 | **code-obfuscation-deobfuscation** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.8K | 核心：控制流扁平化、opaque predicates、字符串加密、import 隐藏、反反汇编 |
+| 2 | **ast-deobfuscation** | [lwjjike/xbsreverseskill](https://github.com/lwjjike/xbsreverseskill) | 35 | JavaScript AST：模式检测、流水线、站点适配 |
+| 3 | **vm-and-bytecode-reverse** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | VM 保护器：VMProtect/Themida、自定义 VM 调度器 |
+| 4 | **anti-debugging-techniques** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | 反调试：ptrace、PEB、时序攻击、TLS、VEH + 绕过 |
+| 5 | **symbolic-execution-tools** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | angr/Z3/Triton：自动约束求解、仿真 |
+| 6 | **binary-protection-bypass** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | ASLR/NX/PIE/Canary/RELRO 绕过 |
+| 7 | **ctf-reverse** | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | 5.8K | CTF 逆向工程方法论 |
+| 8 | **anti-reversing-techniques** | [wshobson/agents](https://github.com/wshobson/agents) | 7.6K | 反逆向技术识别与规避 |
+| 9 | **deep-analysis** | [cyberkaida/reverse-engineering-assistant](https://github.com/cyberkaida/reverse-engineering-assistant) | 345 | 深度逆向工程分类 |
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### Option 1: Auto-Install Script (Recommended)
+### 方式 1：自动安装脚本（推荐）
 
 ```bash
-# Clone the repo
+# 克隆仓库
 git clone https://github.com/YOUR_USERNAME/deobf-all.git
 cd deobf-all
 
-# Run the installer (macOS / Linux)
+# 运行安装程序（macOS / Linux）
 chmod +x install.sh
 ./install.sh
 
-# Or on Windows
+# 或 Windows 下
 install.bat
 ```
 
-The script will:
-- Install all 9 sub-skills globally via `npx skills add`
-- Copy the `deobf-all` dispatcher skill to `~/.agents/skills/`
-- Install the dispatcher into the local Reasonix skill path when running in this workspace
-- Show `--local` and `--dry-run` options for safer installs
+脚本将完成：
+- 通过 `npx skills add` 全局安装全部 9 个子 skill
+- 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
+- 如果在当前 workspace 中运行，也会安装到本地 Reasonix skill 路径
+- 提供 `--local` 和 `--dry-run` 参数，方便更安全的安装
 
-### Option 2: Manual Install
+### 方式 2：手动安装
 
 ```bash
-# Install all sub-skills
+# 安装所有子 skill
 npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
 npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
 npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
@@ -68,20 +68,20 @@ npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
 npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
 npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
 
-# Install the deobf-all dispatcher
+# 安装 deobf-all 调度 skill
 mkdir -p ~/.agents/skills/deobf-all
 cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
 ```
 
-### Option 3: One-Command Yaklang Full Install
+### 方式 3：一键安装完整 Yaklang
 
-If you want the **entire** yaklang hack-skills collection (103 security skills including all 5 yaklang sub-skills above):
+如果你想要 **完整** 的 yaklang hack-skills 集合（103 个安全 skill，包含上面全部 5 个 yaklang 子 skill）：
 
 ```bash
 npx skills add yaklang/hack-skills -g -y
 ```
 
-Then only install the 4 non-yaklang skills separately:
+然后单独安装另外 4 个非 yaklang skill：
 
 ```bash
 npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
@@ -90,120 +90,120 @@ npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
 npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
 ```
 
-## 🎯 Usage
+## 🎯 使用方式
 
-### In Reasonix / Claude Code / Cursor
+### 在 Reasonix / Claude Code / Cursor 中
 
 ```
 /deobf-all
 ```
 
-Or programmatically:
+或通过编程方式：
 
 ```python
 run_skill(name="deobf-all")
 ```
 
-### What Happens When You Invoke It
+### 调用后会发生什么
 
-1. **All 9 sub-skills are loaded** into the agent's context via `read_skill`
-2. The agent **triages your target** based on file type and obfuscation symptoms
-3. The agent **routes to the optimal skill combination**:
+1. **全部 9 个子 skill** 通过 `read_skill` 加载到 agent 上下文中
+2. Agent **对你的目标进行分类**，依据文件类型和混淆特征
+3. Agent **路由到最优 skill 组合**：
 
-| Target Type | Primary | Supporting |
-|------------|---------|-----------|
-| Native binary with VMProtect | `code-obfuscation-deobfuscation` + `vm-and-bytecode-reverse` | `+ anti-debugging-techniques` |
-| OLLVM control-flow flattened | `code-obfuscation-deobfuscation` | `+ symbolic-execution-tools` |
-| Packed binary with anti-reverse | `code-obfuscation-deobfuscation` | `+ anti-reversing-techniques + binary-protection-bypass` |
-| Heavily obfuscated JavaScript | `ast-deobfuscation` | `+ code-obfuscation-deobfuscation` |
-| DotNet/Java/Python bytecode | `vm-and-bytecode-reverse` | `+ symbolic-execution-tools` |
-| CTF reverse challenge | `ctf-reverse` + `deep-analysis` | `+ relevant sub-skills` |
-| Unknown — need triage first | `deep-analysis` | `→ then route based on findings` |
+| 目标类型 | 主要 skill | 辅助 skill |
+|---------|-----------|-----------|
+| VMProtect 保护的原生二进制 | `code-obfuscation-deobfuscation` + `vm-and-bytecode-reverse` | `+ anti-debugging-techniques` |
+| OLLVM 控制流扁平化 | `code-obfuscation-deobfuscation` | `+ symbolic-execution-tools` |
+| 压缩/加壳 + 反逆向的二进制 | `code-obfuscation-deobfuscation` | `+ anti-reversing-techniques + binary-protection-bypass` |
+| 重度混淆的 JavaScript | `ast-deobfuscation` | `+ code-obfuscation-deobfuscation` |
+| DotNet/Java/Python 字节码 | `vm-and-bytecode-reverse` | `+ symbolic-execution-tools` |
+| CTF 逆向挑战 | `ctf-reverse` + `deep-analysis` | `+ 相关子 skill` |
+| 未知类型 — 需要先分类 | `deep-analysis` | `→ 根据发现结果再路由` |
 
-### Example Workflows
+### 示例工作流
 
-#### Deobfuscate a VMProtect-protected binary
-
-```
-You: I have a Windows PE file that's protected with VMProtect. Help me deobfuscate it.
-Agent: [loads deobf-all → identifies VMProtect → loads vm-and-bytecode-reverse + anti-debugging-techniques + code-obfuscation-deobfuscation]
-```
-
-#### Deobfuscate JavaScript from obfuscator.io
+#### 反混淆 VMProtect 保护的二进制文件
 
 ```
-You: This JS file is obfuscated with obfuscator.io. Can you clean it up?
-Agent: [loads deobf-all → identifies JS obfuscator → loads ast-deobfuscation → runs detect-patterns.js → applies pipeline]
+你：我有一个 Windows PE 文件，被 VMProtect 保护了。帮我反混淆。
+Agent：[加载 deobf-all → 识别 VMProtect → 加载 vm-and-bytecode-reverse + anti-debugging-techniques + code-obfuscation-deobfuscation]
 ```
 
-#### Solve a CTF reverse engineering challenge
+#### 反混淆 obfuscator.io 处理的 JavaScript
 
 ```
-You: Help me solve this CTF rev challenge — it looks like a custom VM.
-Agent: [loads deobf-all → identifies CTF + VM → loads ctf-reverse + deep-analysis + vm-and-bytecode-reverse]
+你：这个 JS 文件被 obfuscator.io 混淆了，能清理一下吗？
+Agent：[加载 deobf-all → 识别 JS 混淆器 → 加载 ast-deobfuscation → 运行 detect-patterns.js → 应用流水线]
 ```
 
-## 🗂️ Project Structure
+#### 解决 CTF 逆向工程挑战
+
+```
+你：帮我解这个 CTF rev 挑战题——看起来是一个自定义 VM。
+Agent：[加载 deobf-all → 识别 CTF + VM → 加载 ctf-reverse + deep-analysis + vm-and-bytecode-reverse]
+```
+
+## 🗂️ 项目结构
 
 ```
 deobf-all/
-├── README.md              # This file — usage & documentation
-├── LICENSE                 # MIT license
-├── install.sh              # Auto-installer for macOS / Linux
-├── install.bat             # Auto-installer for Windows
+├── README.md              # 本文件 — 使用说明与文档
+├── LICENSE                 # MIT 许可证
+├── install.sh              # macOS / Linux 自动安装脚本
+├── install.bat             # Windows 自动安装脚本
 └── deobf-all/
-    └── SKILL.md            # The dispatcher skill itself
+    └── SKILL.md            # 调度 skill 本体
 ```
 
-## 📋 Requirements
+## 📋 系统要求
 
-| Requirement | Version | Purpose |
-|------------|---------|---------|
-| Node.js | >= 18 | Runtime for `npx skills` CLI |
-| npm / npx | latest | Skills package manager |
-| Agent platform | Any supported | Claude Code, Cursor, Codex, Windsurf, Gemini CLI, etc. |
+| 要求 | 版本 | 用途 |
+|------|------|------|
+| Node.js | >= 18 | `npx skills` CLI 运行时 |
+| npm / npx | latest | Skill 包管理器 |
+| Agent 平台 | 任意支持 | Claude Code、Cursor、Codex、Windsurf、Gemini CLI 等 |
 
-Supported agent platforms (auto-detected by `npx skills`):
-Antigravity, Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, Lingma, OpenCode, Rovo Dev, Trae, Trae CN
+支持的 agent 平台（`npx skills` 自动检测）：
+Antigravity、Claude Code、Codex、Cursor、Gemini CLI、GitHub Copilot、Lingma、OpenCode、Rovo Dev、Trae、Trae CN
 
-## 🏗️ Architecture
+## 🏗️ 架构
 
 ```
-deobf-all (Dispatcher)
+deobf-all (调度器)
   │
-  ├─── P0 Skills (always loaded for relevant target)
-  │    ├── code-obfuscation-deobfuscation  (native binary deobf)
-  │    └── ast-deobfuscation               (JavaScript deobf)
+  ├─── P0 Skills（遇到相关目标时始终加载）
+  │    ├── code-obfuscation-deobfuscation  （原生二进制反混淆）
+  │    └── ast-deobfuscation               （JavaScript 反混淆）
   │
-  ├─── P1 Skills (loaded when needed)
-  │    ├── vm-and-bytecode-reverse         (VM protection)
-  │    ├── anti-debugging-techniques       (anti-debug bypass)
-  │    └── symbolic-execution-tools        (angr/Z3 automation)
+  ├─── P1 Skills（按需加载）
+  │    ├── vm-and-bytecode-reverse         （VM 保护）
+  │    ├── anti-debugging-techniques       （反调试绕过）
+  │    └── symbolic-execution-tools        （angr/Z3 自动化）
   │
-  └─── P2 Skills (supplementary)
-       ├── binary-protection-bypass         (protection bypass)
-       ├── ctf-reverse                      (CTF methodology)
-       ├── anti-reversing-techniques        (anti-reverse circumvent)
-       └── deep-analysis                    (comprehensive triage)
+  └─── P2 Skills（辅助）
+       ├── binary-protection-bypass         （保护绕过）
+       ├── ctf-reverse                      （CTF 方法论）
+       ├── anti-reversing-techniques        （反逆向规避）
+       └── deep-analysis                    （全面分类）
 ```
 
-## 🤝 Contributing
+## 🤝 贡献
 
-Contributions are welcome! Areas of interest:
+欢迎贡献！关注领域：
 
-- New obfuscation type coverage (e.g., .NET obfuscators, Android dex protectors)
-- Improved routing heuristics
-- Additional sub-skill integrations
-- Bug fixes and edge cases
-- Documentation improvements
+- 新增混淆类型覆盖（例如 .NET 混淆器、Android dex 保护器）
+- 改进路由启发式算法
+- 额外子 skill 集成
+- Bug 修复和边界情况
+- 文档改进
 
-Please open an issue or submit a PR.
+请提交 issue 或 PR。
 
-## Open Source Notes
+## 开源说明
 
-This repository is intentionally structured so the dispatcher skill can be reused as a normal Skill package. The reusable entry point is `deobf-all/SKILL.md`, and the install scripts copy it into the local agent skill directory before installing the referenced sub-skills.
+本仓库特意设计为调度 skill 可作为普通的 Skill 包复用。可复用的入口点是 `deobf-all/SKILL.md`，安装脚本在安装引用的子 skill 之前会先将其复制到本地 agent skill 目录。
 
-If you want to publish it as a public skill repository, keep the current `deobf-all/` folder layout and point `install.sh` / `install.bat` at that path. The dispatcher itself is license-compatible with the MIT repository license; the referenced sub-skills keep their upstream licenses.
+如果你想将其发布为公开的 skill 仓库，保持当前的 `deobf-all/` 文件夹结构，并将 `install.sh` / `install.bat` 指向该路径即可。调度器本身与仓库的 MIT 许可证兼容；引用的子 skill 保留各自上游的许可证。
 
 ## 使用方案
 
@@ -213,23 +213,23 @@ If you want to publish it as a public skill repository, keep the current `deobf-
 4. 对 JS 混淆优先走 `ast-deobfuscation`，对 VM / 保护壳优先走 `vm-and-bytecode-reverse` + `anti-debugging-techniques`，对未知样本先走 `deep-analysis`。
 5. 如果是本地 workspace 内的项目，建议用 `--local` 模式做一次试装，确认不会污染全局 skill 目录。
 
-## 中文选项
+## 选项说明
 
 - `--local`：把技能安装到当前 workspace，不影响全局目录。
 - `--dry-run`：只预览将要安装的 skills，不真正执行安装。
 - `/deobf-all`：在支持的 agent 中直接调用统一调度 skill。
 
-## 📄 License
+## 📄 许可证
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT 许可证 — 详见 [LICENSE](LICENSE)。
 
-The sub-skills referenced by this dispatcher are maintained by their respective authors under their own licenses:
+本调度器引用的子 skill 由各自作者维护，适用各自的许可证：
 - `yaklang/hack-skills` — MIT
-- `lwjjike/xbsreverseskill` — see repo
-- `ljagiello/ctf-skills` — see repo
-- `wshobson/agents` — see repo
-- `cyberkaida/reverse-engineering-assistant` — see repo
+- `lwjjike/xbsreverseskill` — 见对应仓库
+- `ljagiello/ctf-skills` — 见对应仓库
+- `wshobson/agents` — 见对应仓库
+- `cyberkaida/reverse-engineering-assistant` — 见对应仓库
 
-## ⚠️ Disclaimer
+## ⚠️ 免责声明
 
-This skill suite is intended for **authorized security research, CTF competitions, and educational purposes** only. Always ensure you have proper authorization before analyzing or deobfuscating any software. The authors and contributors are not responsible for misuse.
+本 skill 套件仅限 **授权的安全研究、CTF 竞赛和教育目的** 使用。请始终确保在分析或反混淆任何软件前获得了适当授权。作者和贡献者不对 misuse 负责。
