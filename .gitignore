@@ -1,0 +1,13 @@
+# Reasonix internal state
+.reasonix/desktop-topic-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
