@@ -1,0 +1,29 @@
+<svg width="300" height="44" viewBox="0 0 300 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6C63FF"/>
+      <stop offset="100%" stop-color="#4A42E0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 盾牌图标 -->
+  <path d="M22 4 L40 10 L40 28 C40 34 34 39 22 42 C10 39 4 34 4 28 L4 10 Z" fill="url(#sg)"/>
+  
+  <!-- 挂锁锁体 -->
+  <rect x="15" y="24" width="14" height="12" rx="3" fill="#8B85FF"/>
+  
+  <!-- 锁环(打开) -->
+  <path d="M19 24 L19 19 C19 15 20.5 13 26 13" fill="none" stroke="white" stroke-opacity="0.9" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="26" cy="14.5" r="1.8" fill="#6C63FF"/>
+  <line x1="26" y1="13" x2="26" y2="17" stroke="white" stroke-opacity="0.9" stroke-width="1.3"/>
+  
+  <!-- 代码符号 < in lock -->
+  <path d="M17 31 L14 29.5 L17 28" fill="none" stroke="white" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- / in lock -->
+  <line x1="21" y1="32" x2="23" y2="27.5" stroke="white" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- > in lock -->
+  <path d="M27 31 L30 29.5 L27 28" fill="none" stroke="white" stroke-opacity="0.9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 品牌文字 -->
+  <text x="50" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="22" fill="#4A42E0">deobf<tspan font-weight="400" fill="#6C63FF">-all</tspan></text>
+</svg>

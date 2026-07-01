@@ -1,18 +1,21 @@
 ---
 title: 快速开始
 description: 三分钟安装并运行 deobf-all
+icon: rocket
 ---
 
 # 快速开始
 
-## 第一步：克隆仓库
+<Steps>
+
+**克隆仓库**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/deobf-all.git
+git clone https://github.com/zeij-drive/deobf.git
 cd deobf-all
 ```
 
-## 第二步：运行安装脚本
+**运行安装脚本**
 
 <Tabs>
   <Tab title="macOS / Linux">
@@ -33,7 +36,7 @@ cd deobf-all
 - 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
 - 如果在当前 workspace 中运行，也会安装到本地 skill 路径
 
-## 第三步：使用
+**开始使用**
 
 在支持的 Agent 平台中直接调用：
 
@@ -45,6 +48,8 @@ cd deobf-all
   run_skill(name="deobf-all")
   ```
 </CodeGroup>
+
+</Steps>
 
 ## 安装选项
 
@@ -64,6 +69,6 @@ cd deobf-all
 ./install.sh --dry-run
 ```
 
-<Note>
-如果这是你的首次使用，建议先运行 `--dry-run` 预览，确认无误后再执行安装。
-</Note>
+<Tip>
+如果是首次使用，建议先运行 `--dry-run` 预览，确认无误后再执行安装。
+</Tip>
