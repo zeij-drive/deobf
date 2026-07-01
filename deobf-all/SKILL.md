@@ -1,113 +1,133 @@
 ---
 name: deobf-all
 description: >-
-  Master dispatcher for deobfuscation workflows. Loads all installed deobf and
-  reverse-engineering skills at once, then routes to the right sub-skill based
-  on the target type. Use when you need comprehensive deobfuscation
-  capabilities for any target — native binary, JavaScript, VM-protected, or packed.
+  Master dispatcher for deobfuscation workflows. Loads the right combination of
+  deobf and reverse-engineering skills based on target type — native binary,
+  JavaScript, VM-protected, packed, or CTF. Use when you need comprehensive
+  deobfuscation capabilities for any target.
 ---
 
 # Deobf-All — Unified Deobfuscation Dispatcher
 
-> Load this skill when you encounter **any** obfuscated or protected code and need the full deobfuscation arsenal. It pulls in all relevant sub-skills simultaneously, then routes based on the concrete situation.
+> When you encounter **any** obfuscated or protected code, this skill triages
+> the target first, then loads **only the relevant sub-skills** — not all 9 at
+> once. This minimises tool calls and context usage.
 
-## 1. SKILL INVENTORY — Load All on Activation
+## 0. EXECUTION CONTRACT (read first)
 
-When this skill is activated, **immediately read_skill for ALL of the following** to bring their instructions into context:
+```
+DO NOT read_skill all 9 sub-skills blindly.
+Instead: triage → load P0 → route → load P1/P2 only if needed.
+```
 
-| # | Skill Name | Purpose | Priority |
-|---|-----------|---------|----------|
-| 1 | `code-obfuscation-deobfuscation` | Core deobf: CFF, opaque predicates, string encrypt, import hiding, anti-disasm | **P0** |
-| 2 | `ast-deobfuscation` | JavaScript AST deobfuscation: pattern detection, pipeline, site-specific adapters | **P0** (for JS) |
+| Phase | Action | Tool calls |
+|-------|--------|------------|
+| Triage | Inspect target file, identify type | 0–1 (read_file / file command) |
+| Load P0 | `read_skill` for 1–2 core skills | 1–2 |
+| Route | Decide if P1/P2 are needed | 0 |
+| Load P1/P2 | `read_skill` only for skills the route demands | 0–3 |
+
+**Goal**: never exceed 5 `read_skill` calls per invocation unless the target is truly unknown.
+
+## 1. SUB-SKILL INVENTORY
+
+| # | Skill | Purpose | Layer |
+|---|-------|---------|-------|
+| 1 | `code-obfuscation-deobfuscation` | Native binary deobf: CFF, opaque predicates, string encrypt, import hiding, anti-disasm | **P0** |
+| 2 | `ast-deobfuscation` | JavaScript AST deobf: pattern detection, pipeline, site-specific adapters | **P0** (JS only) |
 | 3 | `vm-and-bytecode-reverse` | VM protectors (VMProtect/Themida), custom VM dispatcher, opcode mapping | **P1** |
-| 4 | `anti-debugging-techniques` | Anti-debug detection & bypass (ptrace, PEB, timing, TLS callback, VEH) | **P1** |
-| 5 | `symbolic-execution-tools` | angr/Z3/Triton automated deobfuscation, constraint solving, emulation unpacking | **P1** |
-| 6 | `binary-protection-bypass` | ASLR/NX/PIE/Canary/RELRO bypass (often layered with obfuscation) | **P2** |
-| 7 | `ctf-reverse` | CTF reverse engineering challenges methodology | **P2** |
-| 8 | `anti-reversing-techniques` | Anti-reversing identification and circumvention | **P2** |
-| 9 | `deep-analysis` | Deep reverse engineering analysis (comprehensive triage) | **P2** |
+| 4 | `anti-debugging-techniques` | Anti-debug detection & bypass (ptrace, PEB, timing, TLS, VEH) | **P1** |
+| 5 | `symbolic-execution-tools` | angr/Z3/Triton: automated constraint solving, emulation unpacking | **P1** |
+| 6 | `binary-protection-bypass` | ASLR/NX/PIE/Canary/RELRO bypass | **P2** |
+| 7 | `ctf-reverse` | CTF reverse engineering methodology | **P2** |
+| 8 | `anti-reversing-techniques` | Anti-reversing identification & circumvention | **P2** |
+| 9 | `deep-analysis` | Deep reverse engineering triage (comprehensive analysis) | **P2** |
 
-**Loading procedure**: Call `read_skill` for each skill above in a single batch of parallel calls (or sequentially if batch not available). This ensures the full deobfuscation knowledge base is in context before analysis begins.
+## 2. TRIAGE — Do This First (before any read_skill)
 
-## 2. ROUTING DECISION TREE
+Inspect the target and determine:
 
-After loading all sub-skills, determine the target type and route accordingly:
+1. **Target type**: native binary (ELF/PE/Mach-O) / JavaScript / bytecode (DotNet/Java/Python) / other
+2. **Obfuscation family** (if identifiable): CFF, VM protection, string encryption, packing, JS obfuscator (obfuscator.io, JSFuck, etc.)
+3. **Presence of anti-debug / anti-reversing** layers
+4. **Context**: CTF challenge? Production analysis? Quick cleanup?
 
-```
-┌─ Is the target obfuscated code?
-│
-├─ Native binary (ELF/PE/Mach-O)
-│   ├─ Has VM protection? → code-obfuscation-deobfuscation + vm-and-bytecode-reverse
-│   ├─ Has anti-debug?    → + anti-debugging-techniques
-│   ├─ Needs constraint solve? → + symbolic-execution-tools
-│   ├─ Has binary protections? → + binary-protection-bypass
-│   └─ General deobf only? → code-obfuscation-deobfuscation alone
-│
-├─ JavaScript code
-│   ├─ Known site/framework? → ast-deobfuscation (use detect-patterns.js first)
-│   ├─ Control flow flattening in JS? → ast-deobfuscation pipeline
-│   └─ General JS obfuscation? → ast-deobfuscation + code-obfuscation-deobfuscation
-│
-├─ DotNet/Java/Python bytecode
-│   └─ vm-and-bytecode-reverse + symbolic-execution-tools
-│
-├─ CTF challenge
-│   └─ ctf-reverse + deep-analysis + relevant sub-skills
-│
-└─ Unknown / triage needed
-    └─ deep-analysis first, then route based on findings
-```
+**Output**: A triage line, e.g. `TRIAGE: native PE, VMProtect, has anti-debug → P0:code-obfuscation-deobfuscation P1:vm-and-bytecode-reverse,anti-debugging-techniques`
 
-## 3. WORKFLOW — Step by Step
+## 3. ROUTING MATRIX — Load Only What's Needed
 
-### Step 1: Triage (always)
-- Identify target type: native binary, JavaScript, bytecode, other
-- Identify obfuscation family: CFF, VM, string encryption, packing, JS obfuscator (obfuscator.io, jsfuck, etc.)
-- Check for anti-debug/anti-reversing layers
-- **Output**: Triage summary with recommended sub-skill combination
+Based on triage, `read_skill` **only** for the skills marked ✓:
 
-### Step 2: Load & Apply
-- Based on triage, apply the relevant sub-skill knowledge
-- For JavaScript: run `scripts/detect-patterns.js` from ast-deobfuscation to identify site/framework
-- For native binaries: identify protector type (VMProtect/Themida/OLLVM/custom)
+| Target | P0 core-deobf | P0 ast-deobf | P1 vm-reverse | P1 anti-debug | P1 symbolic | P2 bin-bypass | P2 ctf-rev | P2 anti-rev | P2 deep |
+|--------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Native binary, general | ✓ | | | | | | | | |
+| Native + VM protection | ✓ | | ✓ | | | | | | |
+| Native + VM + anti-debug | ✓ | | ✓ | ✓ | | | | | |
+| Native + CFF (OLLVM) | ✓ | | | | ✓ | | | | |
+| Native + packed + anti-rev | ✓ | | | | | ✓ | | ✓ | |
+| JavaScript (any) | | ✓ | | | | | | | |
+| JS + heavy obfuscation | ✓ | ✓ | | | | | | | |
+| DotNet/Java/Python bytecode | ✓ | | ✓ | | ✓ | | | | |
+| CTF reverse challenge | ✓ | | | | | | ✓ | | ✓ |
+| Unknown / unclear | | | | | | | | | ✓ |
 
-### Step 3: Deobfuscate
-- Apply static deobfuscation first (pattern matching, CFF reduction, string decryption)
-- If blocked, pivot to dynamic strategies (debugger scripting, emulation, symbolic execution)
-- Use symbolic-execution-tools for automated constraint solving when manual analysis stalls
+**Rule**: If a cell is empty, do NOT load that skill. This keeps tool calls minimal.
 
-### Step 4: Validate
+## 4. WORKFLOW
+
+### Step 1: Triage (0–1 tool call)
+Inspect the target. Use `read_file` for source code or `file`/`DIE`/`PEiD` output for binaries. Produce the triage line.
+
+### Step 2: Load P0 (1–2 tool calls)
+`read_skill` for the P0 skill(s) the route demands. For native binaries that's `code-obfuscation-deobfuscation`; for JavaScript that's `ast-deobfuscation`.
+
+### Step 3: Load P1/P2 only if routed (0–3 tool calls)
+Only `read_skill` for P1/P2 skills that the routing matrix marks ✓ for your target type.
+
+### Step 4: Deobfuscate
+- **Static first**: pattern matching, CFF reduction, string decryption, dispatcher inlining
+- **Dynamic if blocked**: debugger scripting, emulation, symbolic execution
+- For JS: run `scripts/detect-patterns.js` from ast-deobfuscation first, then apply the matching pipeline
+- For native: identify protector (VMProtect/Themida/OLLVM/custom) before choosing strategy
+
+### Step 5: Validate
 - Compare deobfuscated output to original symptoms
-- Verify that the deobfuscated code is functionally equivalent
-- Check for residual obfuscation layers (nested/stacked protectors)
+- Verify functional equivalence
+- Check for residual/nested obfuscation layers
 
-## 4. CROSS-SKILL COORDINATION
+## 5. FALLBACK — When Triage Is Uncertain
 
-| Situation | Primary Skill | Supporting Skills |
-|-----------|--------------|-------------------|
-| VMProtect binary with anti-debug | vm-and-bytecode-reverse | anti-debugging-techniques, code-obfuscation-deobfuscation |
-| OLLVM CFF binary | code-obfuscation-deobfuscation | symbolic-execution-tools |
-| Packed + anti-reverse | code-obfuscation-deobfuscation | anti-reversing-techniques, binary-protection-bypass |
-| Heavily obfuscated JS (obfuscator.io) | ast-deobfuscation | code-obfuscation-deobfuscation |
-| CTF reverse pwn challenge | ctf-reverse | deep-analysis, all relevant sub-skills |
-| Unknown protector, need triage | deep-analysis | code-obfuscation-deobfuscation |
+If you cannot determine the target type after inspection:
 
-## 5. QUICK REFERENCE — Common Patterns
+1. `read_skill` for `deep-analysis` (P2)
+2. Follow deep-analysis methodology to classify the target
+3. Return to the routing matrix with the classification result
+4. Load the appropriate P0/P1 skills
 
-### Native Binary Deobfuscation Checklist
-1. [ ] Identify protector/packer (file, Detect-It-Easy, PEiD)
-2. [ ] Check for anti-debug (load anti-debugging-techniques)
-3. [ ] Identify obfuscation type (CFF, opaque predicates, string encrypt)
-4. [ ] Apply static deobfuscation (scripting, pattern replacement)
-5. [ ] If stuck → symbolic execution (load symbolic-execution-tools)
-6. [ ] If VM-protected → VM analysis (load vm-and-bytecode-reverse)
-7. [ ] Verify deobfuscated output
+This is the **only** scenario where you should load a P2 skill before P0.
 
-### JavaScript Deobfuscation Checklist
-1. [ ] Run detect-patterns.js from ast-deobfuscation
-2. [ ] Identify obfuscation family (obfuscator.io, custom, JSFuck, etc.)
-3. [ ] Apply matching pipeline from ast-deobfuscation
-4. [ ] For control flow flattening: dispatcher inlining, CFF reduction
-5. [ ] For string encryption: inline-literals pass
-6. [ ] Re-parse after each transformation stage
-7. [ ] Verify output readability and correctness
+## 6. QUICK REFERENCE CHECKLISTS
+
+### Native Binary
+1. [ ] Triage: identify protector/packer (file, DIE, PEiD)
+2. [ ] Load P0: `code-obfuscation-deobfuscation`
+3. [ ] Anti-debug? → Load `anti-debugging-techniques`
+4. [ ] VM-protected? → Load `vm-and-bytecode-reverse`
+5. [ ] Stuck on CFF? → Load `symbolic-execution-tools`
+6. [ ] Packed/protected? → Load `binary-protection-bypass`
+7. [ ] Anti-reversing? → Load `anti-reversing-techniques`
+8. [ ] Deobfuscate → validate
+
+### JavaScript
+1. [ ] Triage: identify obfuscator (obfuscator.io, JSFuck, custom)
+2. [ ] Load P0: `ast-deobfuscation`
+3. [ ] Run `scripts/detect-patterns.js` to identify site/framework
+4. [ ] Apply matching pipeline (CFF reduction, string decryption, dispatcher inline)
+5. [ ] Heavy obfuscation? → also load `code-obfuscation-deobfuscation`
+6. [ ] Re-parse after each stage → validate
+
+### CTF
+1. [ ] Load P2: `ctf-reverse` + `deep-analysis`
+2. [ ] Identify challenge type (VM, packing, crypto, custom)
+3. [ ] Load P0/P1 per routing matrix
+4. [ ] Solve → validate flag

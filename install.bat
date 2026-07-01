@@ -6,28 +6,44 @@ setlocal enabledelayedexpansion
 ::  Installs all deobfuscation-related agent skills at once.
 ::
 ::  Usage:
-::    install.bat            # install all skills (global)
-::    install.bat --local    # install to current project only
-::    install.bat --dry-run  # preview without installing
+::    install.bat              # install all skills (global)
+::    install.bat --local      # install to current project only
+::    install.bat --dry-run    # preview without installing
+::    install.bat --force      # reinstall even if already installed
+::    install.bat --no-deps    # skip sub-skills, only install dispatcher
 :: ============================================================
 
 set "GLOBAL_FLAG=-g"
 set "DRY_RUN=0"
+set "FORCE=0"
+set "NO_DEPS=0"
 
-if "%~1"=="--local" set "GLOBAL_FLAG="
-if "%~1"=="--dry-run" set "DRY_RUN=1"
-if "%~1"=="--help" goto :usage
-if "%~1"=="-h" goto :usage
+:parse_args
+if "%~1"=="" goto :args_done
+if "%~1"=="--local"    set "GLOBAL_FLAG=" & shift & goto :parse_args
+if "%~1"=="--dry-run"  set "DRY_RUN=1"   & shift & goto :parse_args
+if "%~1"=="--force"    set "FORCE=1"     & shift & goto :parse_args
+if "%~1"=="--no-deps"  set "NO_DEPS=1"   & shift & goto :parse_args
+if "%~1"=="--help"     goto :usage
+if "%~1"=="-h"         goto :usage
+echo Unknown argument: %~1
+exit /b 1
+:args_done
 
 echo.
 echo   ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗ ██████╗
-echo   ██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║██╔════╝
-echo   ██║  ██║█████╗  ██║     ██║   ██║██╔██╗ ██║██║  ███╗
-echo   ██║  ██║██╔══╝  ██║     ██║   ██║██║╚██╗██║██║   ██║
-echo   ██████╔╝███████╗╚██████╗╚██████╔╝██║ ╚████║╚██████╔╝
-echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝
+echo   ██╔══██╗██╔════╝██╔════╝██╔═╗██║██╔████╗██║██╔════╝
+echo   ██║  ██║█████╗  ██║     ██║██╗██║██╔██║██║██║  ███╗
+echo   ██║  ██║██╔══╝  ██║     ██║██████║██║╚██║██║   ██║
+echo   ██████╔╝███████╗╚██████╗╚███╔██║██║ ╚████║╚██████╔╝
+echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
 echo.
 echo   Deobfuscation Skill Suite - Auto Installer
+if "%GLOBAL_FLAG%"=="-g" (
+    echo   Mode: global
+) else (
+    echo   Mode: local ^(current project^)
+)
 echo   --------------------------------------------
 echo.
 
@@ -39,21 +55,40 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
-:: Install deobf-all dispatcher
-set "SKILL_DIR=%USERPROFILE%\.agents\skills\deobf-all"
-if exist "%SKILL_DIR%" (
-    echo   SKIP: deobf-all ^(dispatcher^) already installed
+:: Show Node version
+for /f "tokens=*" %%v in ('node --version 2^>nul') do set "NODE_VER=%%v"
+echo   Node.js: %NODE_VER%
+echo.
+
+:: Determine install dir
+set "SCRIPT_DIR=%~dp0"
+if "%GLOBAL_FLAG%"=="" (
+    set "SKILL_DIR=%SCRIPT_DIR%.agents\skills\deobf-all"
 ) else (
-    if "!DRY_RUN!"=="1" (
-        echo   [DRY-RUN] Would install: deobf-all
-    ) else (
-        echo   Installing deobf-all ^(dispatcher^)...
-        if not exist "%SKILL_DIR%" mkdir "%SKILL_DIR%"
-        copy /Y "%~dp0deobf-all\SKILL.md" "%SKILL_DIR%\SKILL.md" >nul 2>&1
-        echo   OK deobf-all installed from local repo
-    )
+    set "SKILL_DIR=%USERPROFILE%\.agents\skills\deobf-all"
+)
+
+:: Install deobf-all dispatcher
+if exist "%SKILL_DIR%\SKILL.md" if "!FORCE!"=="0" (
+    echo   SKIP: deobf-all ^(dispatcher^) already installed at !SKILL_DIR!
+) else if "!DRY_RUN!"=="1" (
+    echo   [DRY-RUN] Would install: deobf-all to !SKILL_DIR!
+) else (
+    echo   Installing deobf-all ^(dispatcher^)...
+    if not exist "%SKILL_DIR%" mkdir "%SKILL_DIR%"
+    copy /Y "%SCRIPT_DIR%deobf-all\SKILL.md" "%SKILL_DIR%\SKILL.md" >nul 2>&1
+    echo   OK deobf-all installed to !SKILL_DIR!
 )
 echo.
+
+:: Skip sub-skills if --no-deps
+if "!NO_DEPS!"=="1" (
+    echo   --no-deps: skipping sub-skills installation
+    echo.
+    echo   Done! Dispatcher installed. Use /deobf-all to activate.
+    echo.
+    exit /b 0
+)
 
 :: Install each skill
 set /a SUCCESS=0
@@ -83,26 +118,45 @@ exit /b 0
 set "REPO=%~1"
 set "SKILL=%~2"
 set /a "NUM=SUCCESS+FAILED+1"
+
+:: Skip if already installed and not --force
+set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%SKILL%"
+if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
+    echo   [%NUM%/%TOTAL%] %SKILL% - already installed, skipping
+    set /a SUCCESS+=1
+    exit /b 0
+)
+
 if "!DRY_RUN!"=="1" (
-    echo   [DRY-RUN] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
+    echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
+    set /a SUCCESS+=1
+    exit /b 0
+)
+
+echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
+npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y >nul 2>&1
+if !ERRORLEVEL! equ 0 (
+    echo     OK
     set /a SUCCESS+=1
 ) else (
-    echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
-    npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y >nul 2>&1
+    echo     Retrying with --full-depth...
+    npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y --full-depth >nul 2>&1
     if !ERRORLEVEL! equ 0 (
-        echo     OK
+        echo     OK ^(recovered^)
         set /a SUCCESS+=1
     ) else (
-        echo     FAILED - install manually: npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
+        echo     FAILED - run manually: npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
         set /a FAILED+=1
     )
 )
 exit /b 0
 
 :usage
-echo Usage: install.bat [--local] [--dry-run] [--help]
+echo Usage: install.bat [--local] [--dry-run] [--force] [--no-deps] [--help]
 echo.
 echo   --local    Install skills to current project instead of globally
 echo   --dry-run  Show what would be installed without installing
+echo   --force    Reinstall even if already installed
+echo   --no-deps  Only install the deobf-all dispatcher, skip sub-skills
 echo   --help     Show this help message
 exit /b 0
