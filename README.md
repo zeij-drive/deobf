@@ -6,6 +6,14 @@
 [![Skills Standard](https://img.shields.io/badge/Agent%20Skills-Standard-blue)](https://agentskills.io)
 [![Platform](https://img.shields.io/badge/platform-Claude%20Code%20%7C%20Cursor%20%7C%20Codex%20%7C%20Windsurf-green)](https://skills.sh)
 
+### ⚡ 一键安装
+
+```bash
+npx skills add zeij-drive/deobf -g -y
+```
+
+> 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 一键安装，自动识别所有支持的 agent 平台。
+
 ---
 
 ## 📖 这是什么？
@@ -33,12 +41,27 @@
 
 ## 🚀 快速开始
 
+### 方式 0：Skills.sh 一键安装（最推荐 🌟）
+
+```bash
+npx skills add zeij-drive/deobf -g -y
+```
+
+这一条命令即可：
+- 自动发现仓库中的 `deobf-all` 调度 skill
+- 安装到全局 skill 目录（`~/.agents/skills/deobf-all/`）
+- 自动注册到所有已安装的 agent 平台（Claude Code、Cursor、Codex、Gemini CLI 等）
+
+> 📖 在 [skills.sh/zeij-drive/deobf](https://skills.sh/zeij-drive/deobf) 查看详情和安装量。
+
+安装调度 skill 后，首次调用 `/deobf-all` 时它会自动 `read_skill` 拉起全部 9 个子 skill。如果你希望离线安装或同时预装所有子 skill，请用下方的方式 1。
+
 ### 方式 1：自动安装脚本（推荐）
 
 ```bash
 # 克隆仓库
-git clone https://github.com/YOUR_USERNAME/deobf-all.git
-cd deobf-all
+git clone https://github.com/zeij-drive/deobf.git
+cd deobf
 
 # 运行安装程序（macOS / Linux）
 chmod +x install.sh
