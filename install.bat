@@ -165,7 +165,7 @@ if "!NO_DEPS!"=="1" (
 :: Install each skill
 set /a SUCCESS=0
 set /a FAILED=0
-set /a TOTAL=21
+set /a TOTAL=26
 
 call :install_skill "yaklang/hack-skills" "code-obfuscation-deobfuscation"
 call :install_skill "lwjjike/xbsreverseskill" "ast-deobfuscation"
@@ -194,6 +194,13 @@ call :install_skill "trailofbits/skills-curated" "ghidra-headless"
 call :install_skill "yfe404/frida-17-skill" "frida-17"
 call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineering-malware-with-ghidra"
 call :install_skill "zhaoxuya520/reverse-skill" "radare2"
+
+:: New: Java / Android deobfuscation
+call :install_skill "quarkusio/quarkusdev-skills" "java-decompile"
+call :install_skill "brownfinesecurity/iothackbot" "jadx"
+call :install_skill "brownfinesecurity/iothackbot" "apktool"
+call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineering-android-malware-with-jadx"
+call :install_skill "trailofbits/skills" "firebase-apk-scanner"
 
 :: Summary
 echo.

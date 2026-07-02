@@ -10,13 +10,13 @@ description: >-
 # Deobf-All — Unified Deobfuscation Dispatcher
 
 > When you encounter **any** obfuscated or protected code, this skill triages
-> the target first, then loads **only the relevant sub-skills** — not all 21 at
+> the target first, then loads **only the relevant sub-skills** — not all 26 at
 > once. This minimises tool calls and context usage.
 
 ## 0. EXECUTION CONTRACT (read first)
 
 ```
-DO NOT read_skill all 21 sub-skills blindly.
+DO NOT read_skill all 26 sub-skills blindly.
 Instead: triage → load P0 → route → load P1/P2 only if needed.
 ```
 
@@ -42,12 +42,17 @@ Instead: triage → load P0 → route → load P1/P2 only if needed.
 | 7 | `ctf-reverse` | CTF reverse engineering methodology | **P2** |
 | 8 | `anti-reversing-techniques` | Anti-reversing identification & circumvention | **P2** |
 | 9 | `deep-analysis` | Deep reverse engineering triage (comprehensive analysis) | **P2** |
+| 10 | `java-decompile` | Java bytecode decompile: CFR/Procyon/Fernflower | **P2** |
+| 11 | `jadx` | Android APK decompile: DEX → Java source | **P2** |
+| 12 | `apktool` | APK unpacking, smali disassembly, resource extraction | **P3** |
+| 13 | `reverse-engineering-android-malware-with-jadx` | Android malware RE workflow using JADX | **P3** |
+| 14 | `firebase-apk-scanner` | Firebase APK configuration security scan | **P3** |
 
 ## 2. TRIAGE — Do This First (before any read_skill)
 
 Inspect the target and determine:
 
-1. **Target type**: native binary (ELF/PE/Mach-O) / JavaScript / bytecode (DotNet/Java/Python) / other
+1. **Target type**: native binary (ELF/PE/Mach-O) / JavaScript / bytecode (DotNet/Java/Python) / Android APK / other
 2. **Obfuscation family** (if identifiable): CFF, VM protection, string encryption, packing, JS obfuscator (obfuscator.io, JSFuck, etc.)
 3. **Presence of anti-debug / anti-reversing** layers
 4. **Context**: CTF challenge? Production analysis? Quick cleanup?
@@ -58,18 +63,20 @@ Inspect the target and determine:
 
 Based on triage, `read_skill` **only** for the skills marked ✓:
 
-| Target | P0 core-deobf | P0 ast-deobf | P1 vm-reverse | P1 anti-debug | P1 symbolic | P2 bin-bypass | P2 ctf-rev | P2 anti-rev | P2 deep |
-|--------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| Native binary, general | ✓ | | | | | | | | |
-| Native + VM protection | ✓ | | ✓ | | | | | | |
-| Native + VM + anti-debug | ✓ | | ✓ | ✓ | | | | | |
-| Native + CFF (OLLVM) | ✓ | | | | ✓ | | | | |
-| Native + packed + anti-rev | ✓ | | | | | ✓ | | ✓ | |
-| JavaScript (any) | | ✓ | | | | | | | |
-| JS + heavy obfuscation | ✓ | ✓ | | | | | | | |
-| DotNet/Java/Python bytecode | ✓ | | ✓ | | ✓ | | | | |
-| CTF reverse challenge | ✓ | | | | | | ✓ | | ✓ |
-| Unknown / unclear | | | | | | | | | ✓ |
+| Target | P0 core-deobf | P0 ast-deobf | P1 vm-reverse | P1 anti-debug | P1 symbolic | P2 bin-bypass | P2 ctf-rev | P2 anti-rev | P2 deep | P2 java-decompile | P2 jadx |
+|--------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Native binary, general | ✓ | | | | | | | | | | |
+| Native + VM protection | ✓ | | ✓ | | | | | | | | |
+| Native + VM + anti-debug | ✓ | | ✓ | ✓ | | | | | | | |
+| Native + CFF (OLLVM) | ✓ | | | | ✓ | | | | | | |
+| Native + packed + anti-rev | ✓ | | | | | ✓ | | ✓ | | | |
+| JavaScript (any) | | ✓ | | | | | | | | | |
+| JS + heavy obfuscation | ✓ | ✓ | | | | | | | | | |
+| DotNet/Java/Python bytecode | ✓ | | ✓ | | ✓ | | | | | | |
+| Java bytecode (JAR/class) | | | | | | | | | | ✓ | |
+| Android APK | | | | | | | | | | | ✓ |
+| CTF reverse challenge | ✓ | | | | | | ✓ | | ✓ | | |
+| Unknown / unclear | | | | | | | | | ✓ | | |
 
 **Rule**: If a cell is empty, do NOT load that skill. This keeps tool calls minimal.
 
@@ -89,6 +96,8 @@ Only `read_skill` for P1/P2 skills that the routing matrix marks ✓ for your ta
 - **Dynamic if blocked**: debugger scripting, emulation, symbolic execution
 - For JS: run `scripts/detect-patterns.js` from ast-deobfuscation first, then apply the matching pipeline
 - For native: identify protector (VMProtect/Themida/OLLVM/custom) before choosing strategy
+- For Java bytecode: decompile with `java-decompile` (CFR/Procyon/Fernflower)
+- For Android APK: unpack with `apktool`, then decompile DEX with `jadx`
 
 ### Step 5: Validate
 - Compare deobfuscated output to original symptoms
@@ -131,3 +140,11 @@ This is the **only** scenario where you should load a P2 skill before P0.
 2. [ ] Identify challenge type (VM, packing, crypto, custom)
 3. [ ] Load P0/P1 per routing matrix
 4. [ ] Solve → validate flag
+
+### Java / Android
+1. [ ] Triage: JAR/class file? Android APK?
+2. [ ] Java bytecode → Load P2: `java-decompile`
+3. [ ] Android APK → Load P2: `jadx` (and `apktool` for unpacking if needed)
+4. [ ] Android malware analysis → also load `reverse-engineering-android-malware-with-jadx`
+5. [ ] Firebase config scan → Load P3: `firebase-apk-scanner`
+6. [ ] Decompile → analyze → validate

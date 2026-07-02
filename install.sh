@@ -53,6 +53,13 @@ SKILLS=(
   "yfe404/frida-17-skill:frida-17"
   "mukul975/anthropic-cybersecurity-skills:reverse-engineering-malware-with-ghidra"
   "zhaoxuya520/reverse-skill:radare2"
+
+  # ── New: Java / Android deobfuscation ──
+  "quarkusio/quarkusdev-skills:java-decompile"
+  "brownfinesecurity/iothackbot:jadx"
+  "brownfinesecurity/iothackbot:apktool"
+  "mukul975/anthropic-cybersecurity-skills:reverse-engineering-android-malware-with-jadx"
+  "trailofbits/skills:firebase-apk-scanner"
 )
 
 GLOBAL_FLAG="-g"

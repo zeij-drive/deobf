@@ -2,7 +2,7 @@
 
 # 🛡️ deobf-all — Unified Deobfuscation Skill Suite for AI Agents
 
-> **One command to load the entire deobfuscation arsenal.** A master dispatcher skill that pulls in 21 specialized reverse-engineering & deobfuscation sub-skills, then routes to the right combination based on your target type — native binary, JavaScript, VM-protected, packed, or CTF.
+> **One command to load the entire deobfuscation arsenal.** A master dispatcher skill that pulls in 26 specialized reverse-engineering & deobfuscation sub-skills, then routes to the right combination based on your target type — native binary, JavaScript, VM-protected, packed, or CTF.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills Standard](https://img.shields.io/badge/Agent%20Skills-Standard-blue)](https://agentskills.io)
@@ -15,7 +15,7 @@
 npx skills add zeij-drive/deobf -g -y
 ```
 
-**Install all 21 sub-skills + dispatcher (single command):**
+**Install all 26 sub-skills + dispatcher (single command):**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
@@ -33,7 +33,7 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 
 **deobf-all** is an Agent Skill that acts as a unified entry point for deobfuscation workflows. Instead of manually loading individual skills for different obfuscation types, you invoke `deobf-all` once and it:
 
-1. **Loads all 21 sub-skills** into the agent's context simultaneously
+1. **Loads all 26 sub-skills** into the agent's context simultaneously
 2. **Triages your target** (native binary, JavaScript, bytecode, CTF, unknown)
 3. **Routes to the optimal skill combination** for the specific obfuscation type
 4. **Guides the full deobfuscation workflow** from triage → analysis → deobfuscation → validation
@@ -63,12 +63,17 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 | 19 | **reverse-engineering-malware-with-ghidra** 🆕 | [mukul975/cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 224 | Ghidra malware reverse engineering |
 | 20 | **frida-17** 🆕 | [yfe404/frida-17-skill](https://github.com/yfe404/frida-17-skill) | 1.2K | Frida dynamic instrumentation |
 | 21 | **radare2** 🆕 | [zhaoxuya520/reverse-skill](https://github.com/zhaoxuya520/reverse-skill) | 81 | radare2 reverse engineering toolchain |
+| 22 | **java-decompile** 🆕 | [quarkusio/quarkusdev-skills](https://github.com/quarkusio/quarkusdev-skills) | 37 | Java bytecode decompile: CFR/Procyon/Fernflower |
+| 23 | **jadx** 🆕 | [brownfinesecurity/iothackbot](https://github.com/brownfinesecurity/iothackbot) | 316 | Android APK decompiler: DEX → Java source |
+| 24 | **apktool** 🆕 | [brownfinesecurity/iothackbot](https://github.com/brownfinesecurity/iothackbot) | — | APK unpacking, smali disassembly, resource extraction |
+| 25 | **reverse-engineering-android-malware-with-jadx** 🆕 | [mukul975/cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 128 | Reverse-engineer Android malware with JADX |
+| 26 | **firebase-apk-scanner** 🆕 | [trailofbits/skills](https://github.com/trailofbits/skills) | 3.5K | Firebase APK security scanning |
 
 ## 🚀 Quick Start
 
 ### Method 0: curl | bash / Windows One-Click Install (Recommended 🌟)
 
-Install **all 21 sub-skills + deobf-all dispatcher** without cloning:
+Install **all 26 sub-skills + deobf-all dispatcher** without cloning:
 
 **macOS / Linux:**
 ```bash
@@ -81,7 +86,7 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 ```
 
 This single command:
-- Installs all **21** deobfuscation sub-skills from 10 GitHub repos
+- Installs all **26** deobfuscation sub-skills from 10 GitHub repos
 - Installs the `deobf-all` dispatcher skill
 - Registers with all detected agent platforms
 
@@ -108,7 +113,7 @@ install.bat
 ```
 
 The script will:
-- Install all 21 sub-skills globally via `npx skills add`
+- Install all 26 sub-skills globally via `npx skills add`
 - Copy the `deobf-all` dispatcher skill to `~/.agents/skills/`
 - Support `--local` and `--dry-run` flags for safer installs
 
@@ -142,6 +147,13 @@ npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y
 npx skills add yfe404/frida-17-skill --skill frida-17 -g -y
 npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y
 npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y
+
+# Java / Android deobfuscation
+npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y
+npx skills add brownfinesecurity/iothackbot --skill jadx -g -y
+npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
+npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
+npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
 # Install deobf-all dispatcher
 mkdir -p ~/.agents/skills/deobf-all
@@ -179,7 +191,7 @@ run_skill(name="deobf-all")
 
 ### What Happens When You Invoke It
 
-1. **All 21 sub-skills are loaded** into the agent's context via `read_skill`
+1. **All 26 sub-skills are loaded** into the agent's context via `read_skill`
 2. The agent **triages your target** based on file type and obfuscation symptoms
 3. The agent **routes to the optimal skill combination**:
 
@@ -311,6 +323,8 @@ The sub-skills referenced by this dispatcher are maintained by their respective 
 - `trailofbits/skills-curated` — Apache 2.0
 - `yfe404/frida-17-skill` — see repo
 - `zhaoxuya520/reverse-skill` — see repo
+- `quarkusio/quarkusdev-skills` — see repo
+- `brownfinesecurity/iothackbot` — see repo
 
 ## ⚠️ Disclaimer
 
