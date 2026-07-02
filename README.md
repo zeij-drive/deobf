@@ -20,17 +20,12 @@ npx skills add zeij-drive/deobf -g -y
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows 一键安装（cmd）：**
-```cmd
-curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && powershell -c "Unblock-File '%TEMP%\deobf.bat'" && %TEMP%\deobf.bat
-```
-
 **Windows 一键安装（PowerShell）：**
 ```powershell
-powershell -c "$f='$env:TEMP\deobf.bat'; iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $f; Unblock-File $f; cmd /c $f"
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 ```
 
-> 安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 21 个子 skill**，上面的一键命令（cmd/PowerShell）即可全量安装，无需克隆仓库。
+> 安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 21 个子 skill**，上面的一键命令（PowerShell）即可全量安装，无需克隆仓库。
 
 ---
 
@@ -80,14 +75,9 @@ powershell -c "$f='$env:TEMP\deobf.bat'; iwr -useb https://raw.githubusercontent
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows（cmd）：**
-```cmd
-curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && powershell -c "Unblock-File '%TEMP%\deobf.bat'" && %TEMP%\deobf.bat
-```
-
 **Windows（PowerShell）：**
 ```powershell
-powershell -c "$f='$env:TEMP\deobf.bat'; iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $f; Unblock-File $f; cmd /c $f"
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 ```
 
 这一条命令即可完成：
