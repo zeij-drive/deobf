@@ -1,44 +1,44 @@
 ---
 title: deobf-all 简介
-description: AI Agent 统一反混淆技能套件 — 一条命令加载整个反混淆武器库
+description: AI Agent 统一反混淆技能套件 — 先分类、按需加载、智能路由
 icon: shield-check
 ---
 
 # deobf-all 简介
 
-**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一入口。你不需要为不同的混淆类型手动加载各自的 skill，只需调用一次 `deobf-all`，它就会自动完成全部调度。
+**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一调度入口。一条命令 `npx skills add zeij-drive/deobf -g -y` 即可安装，调用 `/deobf-all` 后它会**先分类、再按需加载**相关子 skill，避免一次性拉起全部 9 个子 skill 浪费上下文。
 
 <Steps>
-  **加载**
+  **分类（Triage）**
   
-  同时加载全部 9 个子 skill 到 agent 上下文中
+  检查目标文件，识别类型和混淆特征，产出分类摘要
 
-  **分类**
+  **加载 P0**
   
-  对你的目标进行分类（原生二进制、JavaScript、字节码、CTF、未知类型）
+  只加载 1–2 个核心 skill（原生二进制 → `code-obfuscation-deobfuscation`，JavaScript → `ast-deobfuscation`）
 
-  **路由**
+  **按需加载 P1/P2**
   
-  路由到最优 skill 组合，针对具体的混淆类型
+  根据路由结果，仅加载当前目标需要的辅助 skill（如 VM 分析、反调试绕过等）
 
-  **验证**
+  **反混淆 → 验证**
   
-  引导完整的反混淆工作流，确认输出正确性
+  执行反混淆工作流，确认输出正确性
 </Steps>
 
 ## 为什么选择 deobf-all？
 
 <CardGroup cols={2}>
   <Card title="统一入口" icon="bolt">
-    不必记住每个 skill 的名称。一个命令 `/deobf-all`，自动拉起全部 9 个专业子 skill。
+    不必记住每个 skill 的名称。一条命令 `npx skills add zeij-drive/deobf -g -y` 安装，一个命令 `/deobf-all` 调用，自动完成全部调度。
   </Card>
-  <Card title="智能路由" icon="route">
-    根据目标类型和混淆特征，自动选择最优 skill 组合，而非暴力加载全部能力。
+  <Card title="按需加载" icon="route">
+    先分类再加载，仅加载目标相关的子 skill，节省上下文空间和工具调用次数。每次调用不超过 5 次 `read_skill`。
   </Card>
   <Card title="全场景覆盖" icon="shield-check">
     从 VMProtect 到 obfuscator.io，从 OLLVM 到自定义 VM — 覆盖主流混淆与保护方案。
   </Card>
-  <Card title="可扩展" icon="puzzle-piece">
+  <Card title="可扩展" icon="layers">
     架构设计为可扩展：新增子 skill 只需更新调度器的路由表。
   </Card>
 </CardGroup>

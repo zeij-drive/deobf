@@ -1,54 +1,72 @@
 ---
 title: 工作原理
-description: 了解 deobf-all 调度器的工作流程
+description: 了解 deobf-all 调度器的分层加载工作流程
+icon: workflow
 ---
 
 # 工作原理
 
-deobf-all 作为调度器（Dispatcher），在激活时会执行以下流程：
+deobf-all 作为调度器（Dispatcher），**不会一次性加载全部 9 个子 skill**，而是先分类、再按需加载，最大限度节省上下文空间和工具调用次数。
 
-## 激活流程
+## 执行契约
 
-```mermaid
-sequenceDiagram
-    participant 用户
-    participant 调度器
-    participant 子Skill
-
-    用户->>调度器: /deobf-all
-    调度器->>子Skill: read_skill × 9（并行加载）
-    子Skill-->>调度器: 全部知识载入上下文
-    调度器->>调度器: 对目标分类
-    调度器->>子Skill: 路由到最优组合
-    子Skill-->>用户: 分析结果 + 反混淆方案
+```
+不要盲目 read_skill 全部 9 个子 skill。
+而是：分类 → 加载 P0 → 路由 → 仅按需加载 P1/P2
 ```
 
-## 四步工作流
+| 阶段 | 动作 | 工具调用 |
+|------|------|----------|
+| 分类 | 检查目标文件，识别类型 | 0–1（read_file / file 命令） |
+| 加载 P0 | `read_skill` 1–2 个核心 skill | 1–2 |
+| 路由 | 判断是否需要 P1/P2 | 0 |
+| 加载 P1/P2 | 仅 `read_skill` 路由需要的 skill | 0–3 |
 
-### Step 1: 分类（Triage）
+**目标**：每次调用不超过 5 次 `read_skill`，除非目标类型完全未知。
 
-始终执行的第一步：
+## 分步流程
 
-- 识别目标类型：原生二进制、JavaScript、字节码、其他
-- 识别混淆家族：CFF、VM、字符串加密、加壳、JS 混淆器（obfuscator.io、JSFuck 等）
-- 检查是否有反调试/反逆向层
-- **输出**：分类摘要 + 推荐的子 skill 组合
+### Step 1: 分类（Triage）— 0–1 次工具调用
 
-### Step 2: 加载与应用（Load & Apply）
+检查目标，确定：
 
-根据分类结果应用相关子 skill 知识：
+1. **目标类型**：原生二进制 / JavaScript / 字节码 / 其他
+2. **混淆家族**：CFF、VM 保护、字符串加密、加壳、JS 混淆器
+3. **是否有反调试 / 反逆向**层
+4. **上下文**：CTF 挑战？生产分析？快速清理？
 
-- **JavaScript**：运行 `scripts/detect-patterns.js`（来自 ast-deobfuscation）识别站点/框架
-- **原生二进制**：识别保护器类型（VMProtect / Themida / OLLVM / 自定义）
+**输出**：分类行，例如 `TRIAGE: native PE, VMProtect, has anti-debug → P0:code-obfuscation-deobfuscation P1:vm-and-bytecode-reverse,anti-debugging-techniques`
 
-### Step 3: 反混淆（Deobfuscate）
+### Step 2: 加载 P0 — 1–2 次工具调用
 
-- 优先使用静态反混淆（模式匹配、CFF 还原、字符串解密）
-- 如受阻，切换为动态策略（调试器脚本、仿真、符号执行）
-- 当手动分析停滞时，使用 symbolic-execution-tools 进行自动约束求解
+根据分类结果加载核心 skill：
 
-### Step 4: 验证（Validate）
+- **原生二进制** → `read_skill` `code-obfuscation-deobfuscation`
+- **JavaScript** → `read_skill` `ast-deobfuscation`
+
+### Step 3: 按需加载 P1/P2 — 0–3 次工具调用
+
+仅当路由矩阵标记 ✓ 时才加载。**空单元格的 skill 不要加载。**
+
+### Step 4: 反混淆（Deobfuscate）
+
+- **优先静态**：模式匹配、CFF 还原、字符串解密、dispatcher 内联
+- **受阻时切换动态**：调试器脚本、仿真、符号执行
+- **JavaScript**：先运行 `scripts/detect-patterns.js`，再应用匹配的流水线
+- **原生二进制**：先识别保护器类型，再选择策略
+
+### Step 5: 验证（Validate）
 
 - 将反混淆输出与原始特征对比
-- 验证反混淆后的代码功能等价
-- 检查是否有残余混淆层（嵌套/堆叠保护器）
+- 验证代码功能等价
+- 检查是否有残余/嵌套混淆层
+
+## Fallback — 分类不确定时
+
+如果检查后仍无法确定目标类型：
+
+1. `read_skill` 加载 `deep-analysis`（P2）
+2. 遵循 deep-analysis 方法论对目标分类
+3. 回到路由矩阵，根据分类结果加载对应 P0/P1 skill
+
+这是**唯一**应先加载 P2 再加载 P0 的场景。

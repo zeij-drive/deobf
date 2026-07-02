@@ -33,7 +33,7 @@
       {
         "group": "安装",
         "icon": "download",
-        "pages": ["installation/auto-install", "installation/manual-install", "installation/full-yaklang"]
+        "pages": ["installation/skills-sh", "installation/auto-install", "installation/manual-install", "installation/full-yaklang"]
       },
       {
         "group": "指南",
