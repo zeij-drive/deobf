@@ -25,13 +25,13 @@ set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%SKILL%"
 if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
     echo   [%NUM%/%TOTAL%] %SKILL% - already installed, skipping
     set /a SUCCESS+=1
-    goto :eof
+    exit /b
 )
 
 if "!DRY_RUN!"=="1" (
     echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
     set /a SUCCESS+=1
-    goto :eof
+    exit /b
 )
 
 echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
@@ -50,7 +50,7 @@ if !ERRORLEVEL! equ 0 (
         set /a FAILED+=1
     )
 )
-goto :eof
+exit /b
 
 :: ============================================================
 ::  Function: print usage
