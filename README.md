@@ -22,12 +22,11 @@ curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | 
 
 **Windows 一键安装：**
 ```powershell
-curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && %TEMP%\deobf.bat
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 ```
-或使用 PowerShell：
+或使用 PowerShell（纯 PowerShell 运行）：
 ```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
-```
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 
 > 无需克隆仓库，自动安装所有子 skill 和调度器。
 
