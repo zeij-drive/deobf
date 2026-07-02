@@ -21,14 +21,11 @@ curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | 
 ```
 
 **Windows 一键安装：**
-```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```cmd
+npx skills add zeij-drive/deobf -g -y
 ```
-或使用 PowerShell（纯 PowerShell 运行）：
-```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 
-> 无需克隆仓库，自动安装所有子 skill 和调度器。
+> 安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 26 个子 skill**，请克隆仓库后本地运行 `install.bat`（本地文件不会被安全策略拦截）。
 
 ---
 

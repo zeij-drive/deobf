@@ -16,21 +16,14 @@ icon: rocket
     curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
     ```
   </Tab>
-  <Tab title="Windows cmd">
+  <Tab title="Windows">
     ```cmd
-    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf %TEMP%\deobf.bat; Unblock-File %TEMP%\deobf.bat; %TEMP%\deobf.bat"
-    ```
-  </Tab>
-  <Tab title="Windows PowerShell">
-    ```powershell
-    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+    npx skills add zeij-drive/deobf -g -y
     ```
   </Tab>
 </Tabs>
 
-这一条命令即可完成：
-- 自动安装全部 **26 个** 反混淆相关的子 skill（来自 10 个 GitHub 仓库）
-- 自动安装 `deobf-all` 调度 skill
+安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 26 个子 skill**，请克隆仓库后本地运行 `install.bat`。
 - 自动注册到所有已安装的 agent 平台
 
 ## 方式 1：Skills.sh 一键安装（安装调度器）
