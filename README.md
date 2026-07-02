@@ -1,3 +1,5 @@
+[![EN](https://img.shields.io/badge/lang-EN-blue)](README_EN.md) [![中文](https://img.shields.io/badge/lang-中文-red)](README.md)
+
 # 🛡️ deobf-all — AI Agent 统一反混淆技能套件
 
 > **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 26 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。

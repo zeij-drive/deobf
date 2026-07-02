@@ -45,7 +45,8 @@ deobf-all/              # 仓库根
 │   ├── docs.json       # 站点配置（导航、主题、锚点）
 │   ├── *.mdx           # 页面（introduction, quickstart, skills/*, examples/* …）
 │   └── logo/           # Logo SVG（待补充）
-└── README.md           # 项目说明
+├── README_EN.md        # 项目说明（英文）
+└── README.md           # 项目说明（中文）
 ```
 
 **调度器技能层级**:
