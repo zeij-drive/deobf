@@ -6,13 +6,27 @@ icon: rocket
 
 # 快速开始
 
-## 方式 0：curl | bash 一键全量安装（最推荐 🌟）
+## 方式 0：curl | bash / Windows 一键全量安装（最推荐 🌟）
 
 一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
-```
+<Tabs>
+  <Tab title="macOS / Linux">
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+    ```
+  </Tab>
+  <Tab title="Windows cmd">
+    ```cmd
+    curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && %TEMP%\deobf.bat
+    ```
+  </Tab>
+  <Tab title="Windows PowerShell">
+    ```powershell
+    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+    ```
+  </Tab>
+</Tabs>
 
 这一条命令即可完成：
 - 自动安装全部 **21 个** 反混淆相关的子 skill（来自 8 个 GitHub 仓库）
