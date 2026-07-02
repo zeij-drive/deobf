@@ -127,7 +127,7 @@ call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineeri
 call :install_skill "zhaoxuya520/reverse-skill" "radare2"
 
 :: New: Java bytecode deobfuscation
-call :install_skill "smithery.ai" "jadx"
+call :install_repo "smithery.ai/jadx"
 call :install_skill "quarkusio/quarkusdev-skills" "java-decompile"
 call :install_skill "brownfinesecurity/iothackbot" "apktool"
 call :install_skill "trailofbits/skills" "firebase-apk-scanner"
@@ -152,13 +152,13 @@ set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%SKILL%"
 if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
     echo   [%NUM%/%TOTAL%] %SKILL% - already installed, skipping
     set /a SUCCESS+=1
-    exit /b 0
+    goto :eof
 )
 
 if "!DRY_RUN!"=="1" (
     echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
     set /a SUCCESS+=1
-    exit /b 0
+    goto :eof
 )
 
 echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
@@ -177,7 +177,43 @@ if !ERRORLEVEL! equ 0 (
         set /a FAILED+=1
     )
 )
-exit /b 0
+goto :eof
+
+:install_repo
+set "REPO=%~1"
+set /a "NUM=SUCCESS+FAILED+1"
+
+:: Skip if already installed and not --force
+set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%REPO%"
+if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
+    echo   [%NUM%/%TOTAL%] %REPO% - already installed, skipping
+    set /a SUCCESS+=1
+    goto :eof
+)
+
+if "!DRY_RUN!"=="1" (
+    echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% %GLOBAL_FLAG% -y
+    set /a SUCCESS+=1
+    goto :eof
+)
+
+echo   [%NUM%/%TOTAL%] %REPO% ...
+npx skills add %REPO% %GLOBAL_FLAG% -y >nul 2>&1
+if !ERRORLEVEL! equ 0 (
+    echo     OK
+    set /a SUCCESS+=1
+) else (
+    echo     Retrying with --full-depth...
+    npx skills add %REPO% %GLOBAL_FLAG% -y --full-depth >nul 2>&1
+    if !ERRORLEVEL! equ 0 (
+        echo     OK ^(recovered^)
+        set /a SUCCESS+=1
+    ) else (
+        echo     FAILED - run manually: npx skills add %REPO% %GLOBAL_FLAG% -y
+        set /a FAILED+=1
+    )
+)
+goto :eof
 
 :usage
 echo Usage: install.bat [--local] [--dry-run] [--force] [--no-deps] [--help]

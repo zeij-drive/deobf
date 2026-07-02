@@ -179,8 +179,21 @@ for entry in "${SKILLS[@]}"; do
   SKILL="${entry##*:}"
   CURRENT=$((CURRENT + 1))
 
+  # If no colon, entry has no separate skill name → install full repo
+  if [ "$REPO" = "$SKILL" ]; then
+    FULL_REPO="$REPO"
+    HAS_SKILL=false
+  else
+    FULL_REPO="$REPO"
+    HAS_SKILL=true
+  fi
+
   if $DRY_RUN; then
-    echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
+    if $HAS_SKILL; then
+      echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
+    else
+      echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO $GLOBAL_FLAG -y"
+    fi
     SUCCESS=$((SUCCESS + 1))
     continue
   fi
@@ -195,16 +208,31 @@ for entry in "${SKILLS[@]}"; do
 
   printf "  📦 [%d/%d] %-42s → %-32s ... " "$CURRENT" "$TOTAL" "$REPO" "$SKILL"
 
-  if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y &>/dev/null; then
+  if $HAS_SKILL; then
+    NPX_CMD="npx skills add \"$REPO\" --skill \"$SKILL\" $GLOBAL_FLAG -y"
+  else
+    NPX_CMD="npx skills add \"$REPO\" $GLOBAL_FLAG -y"
+  fi
+
+  if eval $NPX_CMD &>/dev/null; then
     echo "✅"
     SUCCESS=$((SUCCESS + 1))
   else
     echo "❌ (retrying --full-depth...)"
-    if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y --full-depth &>/dev/null 2>&1; then
+    if $HAS_SKILL; then
+      RETRY_CMD="npx skills add \"$REPO\" --skill \"$SKILL\" $GLOBAL_FLAG -y --full-depth"
+    else
+      RETRY_CMD="npx skills add \"$REPO\" $GLOBAL_FLAG -y --full-depth"
+    fi
+    if eval $RETRY_CMD &>/dev/null 2>&1; then
       echo "         ✅ (recovered)"
       SUCCESS=$((SUCCESS + 1))
     else
-      echo "         ❌ Failed — run manually: npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
+      if $HAS_SKILL; then
+        echo "         ❌ Failed — run manually: npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
+      else
+        echo "         ❌ Failed — run manually: npx skills add $REPO $GLOBAL_FLAG -y"
+      fi
       FAILED=$((FAILED + 1))
     fi
   fi
