@@ -8,68 +8,6 @@ if exist "%~f0:Zone.Identifier" (
     powershell -c "Unblock-File '%~f0'" 2>nul
 )
 
-:: Jump to main, skipping function definitions
-goto :main
-
-:: ============================================================
-::  Function: install a single skill via npx
-::  Arguments: %~1 = repo, %~2 = skill name
-:: ============================================================
-:install_skill
-set "REPO=%~1"
-set "SKILL=%~2"
-set /a "NUM=SUCCESS+FAILED+1"
-
-:: Skip if already installed and not --force
-set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%SKILL%"
-if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
-    echo   [%NUM%/%TOTAL%] %SKILL% - already installed, skipping
-    set /a SUCCESS+=1
-    exit /b
-)
-
-if "!DRY_RUN!"=="1" (
-    echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
-    set /a SUCCESS+=1
-    exit /b
-)
-
-echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
-npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y >nul 2>&1
-if !ERRORLEVEL! equ 0 (
-    echo     OK
-    set /a SUCCESS+=1
-) else (
-    echo     Retrying with --full-depth...
-    npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y --full-depth >nul 2>&1
-    if !ERRORLEVEL! equ 0 (
-        echo     OK ^(recovered^)
-        set /a SUCCESS+=1
-    ) else (
-        echo     FAILED - run manually: npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
-        set /a FAILED+=1
-    )
-)
-exit /b
-
-:: ============================================================
-::  Function: print usage
-:: ============================================================
-:usage
-echo Usage: install.bat [--local] [--dry-run] [--force] [--no-deps] [--help]
-echo.
-echo   --local    Install skills to current project instead of globally
-echo   --dry-run  Show what would be installed without installing
-echo   --force    Reinstall even if already installed
-echo   --no-deps  Only install the deobf-all dispatcher, skip sub-skills
-echo   --help     Show this help message
-exit /b 0
-
-:: ============================================================
-::  Main entry point
-:: ============================================================
-:main
-
 :: ============================================================
 ::  deobf-all - Auto-Install Script (Windows)
 ::  Installs all deobfuscation-related agent skills at once.
@@ -210,4 +148,58 @@ if !FAILED! gtr 0 echo   Failed:   %FAILED%
 echo.
 echo   All done! Use /deobf-all or run_skill^('deobf-all'^) to activate.
 echo.
+exit /b 0
+
+:: ============================================================
+::  Function: install a single skill via npx
+::  Arguments: %~1 = repo, %~2 = skill name
+:: ============================================================
+:install_skill
+set "REPO=%~1"
+set "SKILL=%~2"
+set /a "NUM=SUCCESS+FAILED+1"
+
+:: Skip if already installed and not --force
+set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%SKILL%"
+if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
+    echo   [%NUM%/%TOTAL%] %SKILL% - already installed, skipping
+    set /a SUCCESS+=1
+    exit /b
+)
+
+if "!DRY_RUN!"=="1" (
+    echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
+    set /a SUCCESS+=1
+    exit /b
+)
+
+echo   [%NUM%/%TOTAL%] %REPO%: %SKILL% ...
+npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y >nul 2>&1
+if !ERRORLEVEL! equ 0 (
+    echo     OK
+    set /a SUCCESS+=1
+) else (
+    echo     Retrying with --full-depth...
+    npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y --full-depth >nul 2>&1
+    if !ERRORLEVEL! equ 0 (
+        echo     OK ^(recovered^)
+        set /a SUCCESS+=1
+    ) else (
+        echo     FAILED - run manually: npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
+        set /a FAILED+=1
+    )
+)
+exit /b
+
+:: ============================================================
+::  Function: print usage
+:: ============================================================
+:usage
+echo Usage: install.bat [--local] [--dry-run] [--force] [--no-deps] [--help]
+echo.
+echo   --local    Install skills to current project instead of globally
+echo   --dry-run  Show what would be installed without installing
+echo   --force    Reinstall even if already installed
+echo   --no-deps  Only install the deobf-all dispatcher, skip sub-skills
+echo   --help     Show this help message
 exit /b 0
