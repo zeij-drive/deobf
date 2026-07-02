@@ -1,6 +1,6 @@
 # 🛡️ deobf-all — AI Agent 统一反混淆技能套件
 
-> **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 9 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。
+> **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 21 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills Standard](https://img.shields.io/badge/Agent%20Skills-Standard-blue)](https://agentskills.io)
@@ -20,7 +20,7 @@ npx skills add zeij-drive/deobf -g -y
 
 **deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一入口。你不需要为不同的混淆类型手动加载各自的 skill，只需调用一次 `deobf-all`，它就会：
 
-1. **同时加载全部 9 个子 skill** 到 agent 上下文中
+1. **同时加载全部 21 个子 skill** 到 agent 上下文中
 2. **对你的目标进行分类**（原生二进制、JavaScript、字节码、CTF、未知类型）
 3. **路由到最优 skill 组合**，针对具体的混淆类型
 4. **引导完整的反混淆工作流**：分类 → 分析 → 反混淆 → 验证
@@ -30,14 +30,26 @@ npx skills add zeij-drive/deobf -g -y
 | # | Skill | 来源 | 安装量 | 功能 |
 |---|-------|------|--------|------|
 | 1 | **code-obfuscation-deobfuscation** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.8K | 核心：控制流扁平化、opaque predicates、字符串加密、import 隐藏、反反汇编 |
-| 2 | **ast-deobfuscation** | [lwjjike/xbsreverseskill](https://github.com/lwjjike/xbsreverseskill) | 35 | JavaScript AST：模式检测、流水线、站点适配 |
+| 2 | **ast-deobfuscation** | [lwjjike/xbsreverseskill](https://github.com/lwjjike/xbsreverseskill) | 38 | JavaScript AST：模式检测、流水线、站点适配 |
 | 3 | **vm-and-bytecode-reverse** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | VM 保护器：VMProtect/Themida、自定义 VM 调度器 |
 | 4 | **anti-debugging-techniques** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | 反调试：ptrace、PEB、时序攻击、TLS、VEH + 绕过 |
 | 5 | **symbolic-execution-tools** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | angr/Z3/Triton：自动约束求解、仿真 |
 | 6 | **binary-protection-bypass** | [yaklang/hack-skills](https://github.com/yaklang/hack-skills) | 1.6K | ASLR/NX/PIE/Canary/RELRO 绕过 |
-| 7 | **ctf-reverse** | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | 5.8K | CTF 逆向工程方法论 |
-| 8 | **anti-reversing-techniques** | [wshobson/agents](https://github.com/wshobson/agents) | 7.6K | 反逆向技术识别与规避 |
-| 9 | **deep-analysis** | [cyberkaida/reverse-engineering-assistant](https://github.com/cyberkaida/reverse-engineering-assistant) | 345 | 深度逆向工程分类 |
+| 7 | **ctf-reverse** | [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) | 5.9K | CTF 逆向工程方法论 |
+| 8 | **anti-reversing-techniques** | [wshobson/agents](https://github.com/wshobson/agents) | 7.7K | 反逆向技术识别与规避 |
+| 9 | **deep-analysis** | [cyberkaida/reverse-engineering-assistant](https://github.com/cyberkaida/reverse-engineering-assistant) | 356 | 深度逆向工程分类 |
+| 10 | **deobf-string** 🆕 | [p4nda0s/bin-deobf-skills](https://github.com/p4nda0s/bin-deobf-skills) | 55 | 字符串反混淆专用 |
+| 11 | **deobf-indirect** 🆕 | [p4nda0s/bin-deobf-skills](https://github.com/p4nda0s/bin-deobf-skills) | 55 | 间接跳转反混淆 |
+| 12 | **llvm-obfuscation** 🆕 | [gmh5225/awesome-llvm-security](https://github.com/gmh5225/awesome-llvm-security) | 65 | LLVM 混淆分析（OLLVM 等） |
+| 13 | **binary-lifting** 🆕 | [gmh5225/awesome-llvm-security](https://github.com/gmh5225/awesome-llvm-security) | 42 | 二进制提升与 IR 分析 |
+| 14 | **deobfuscating-javascript-malware** 🆕 | [mukul975/anthropic-cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 96 | JS 恶意代码反混淆 |
+| 15 | **deobfuscating-powershell-obfuscated-malware** 🆕 | [mukul975/anthropic-cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 63 | PowerShell 混淆恶意代码反混淆 |
+| 16 | **binary-analysis-patterns** 🆕 | [wshobson/agents](https://github.com/wshobson/agents) | 7.7K | 二进制分析模式识别 |
+| 17 | **yara-rule-authoring** 🆕 | [trailofbits/skills](https://github.com/trailofbits/skills) | 3.2K | YARA 规则编写 |
+| 18 | **ghidra-headless** 🆕 | [trailofbits/skills-curated](https://github.com/trailofbits/skills-curated) | 198 | Ghidra 无头模式自动化逆向 |
+| 19 | **reverse-engineering-malware-with-ghidra** 🆕 | [mukul975/anthropic-cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 224 | Ghidra 恶意代码逆向 |
+| 20 | **frida-17** 🆕 | [yfe404/frida-17-skill](https://github.com/yfe404/frida-17-skill) | 1.2K | Frida 动态插桩框架 |
+| 21 | **radare2** 🆕 | [zhaoxuya520/reverse-skill](https://github.com/zhaoxuya520/reverse-skill) | 81 | radare2 逆向工具链 |
 
 ## 🚀 快速开始
 
@@ -54,7 +66,7 @@ npx skills add zeij-drive/deobf -g -y
 
 > 📖 在 [skills.sh/zeij-drive/deobf](https://skills.sh/zeij-drive/deobf) 查看详情和安装量。
 
-安装调度 skill 后，首次调用 `/deobf-all` 时它会自动 `read_skill` 拉起全部 9 个子 skill。如果你希望离线安装或同时预装所有子 skill，请用下方的方式 1。
+安装调度 skill 后，首次调用 `/deobf-all` 时它会自动 `read_skill` 拉起全部 21 个子 skill。如果你希望离线安装或同时预装所有子 skill，请用下方的方式 1。
 
 ### 方式 1：自动安装脚本（推荐）
 
@@ -72,7 +84,7 @@ install.bat
 ```
 
 脚本将完成：
-- 通过 `npx skills add` 全局安装全部 9 个子 skill
+- 通过 `npx skills add` 全局安装全部 21 个子 skill
 - 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
 - 如果在当前 workspace 中运行，也会安装到本地 Reasonix skill 路径
 - 提供 `--local` 和 `--dry-run` 参数，方便更安全的安装
@@ -80,7 +92,7 @@ install.bat
 ### 方式 2：手动安装
 
 ```bash
-# 安装所有子 skill
+# 安装所有子 skill（P0-P2）
 npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
 npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
 npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
@@ -90,6 +102,23 @@ npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y
 npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
 npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
 npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
+
+# 二进制反混淆补充
+npx skills add p4nda0s/bin-deobf-skills -g -y
+npx skills add gmh5225/awesome-llvm-security --skill llvm-obfuscation -g -y
+npx skills add gmh5225/awesome-llvm-security --skill binary-lifting -g -y
+
+# JS / PowerShell 反混淆
+npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-javascript-malware -g -y
+npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-powershell-obfuscated-malware -g -y
+
+# 工具链 & 二进制分析
+npx skills add wshobson/agents --skill binary-analysis-patterns -g -y
+npx skills add trailofbits/skills --skill yara-rule-authoring -g -y
+npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y
+npx skills add yfe404/frida-17-skill --skill frida-17 -g -y
+npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y
+npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y
 
 # 安装 deobf-all 调度 skill
 mkdir -p ~/.agents/skills/deobf-all
@@ -129,7 +158,7 @@ run_skill(name="deobf-all")
 
 ### 调用后会发生什么
 
-1. **全部 9 个子 skill** 通过 `read_skill` 加载到 agent 上下文中
+1. **全部 21 个子 skill** 通过 `read_skill` 加载到 agent 上下文中
 2. Agent **对你的目标进行分类**，依据文件类型和混淆特征
 3. Agent **路由到最优 skill 组合**：
 
@@ -252,6 +281,13 @@ MIT 许可证 — 详见 [LICENSE](LICENSE)。
 - `ljagiello/ctf-skills` — 见对应仓库
 - `wshobson/agents` — 见对应仓库
 - `cyberkaida/reverse-engineering-assistant` — 见对应仓库
+- `p4nda0s/bin-deobf-skills` — 见对应仓库
+- `gmh5225/awesome-llvm-security` — 见对应仓库
+- `mukul975/anthropic-cybersecurity-skills` — 见对应仓库
+- `trailofbits/skills` — Apache 2.0
+- `trailofbits/skills-curated` — Apache 2.0
+- `yfe404/frida-17-skill` — 见对应仓库
+- `zhaoxuya520/reverse-skill` — 见对应仓库
 
 ## ⚠️ 免责声明
 

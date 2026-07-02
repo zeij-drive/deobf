@@ -93,7 +93,7 @@ if "!NO_DEPS!"=="1" (
 :: Install each skill
 set /a SUCCESS=0
 set /a FAILED=0
-set /a TOTAL=9
+set /a TOTAL=21
 
 call :install_skill "yaklang/hack-skills" "code-obfuscation-deobfuscation"
 call :install_skill "lwjjike/xbsreverseskill" "ast-deobfuscation"
@@ -104,6 +104,24 @@ call :install_skill "yaklang/hack-skills" "binary-protection-bypass"
 call :install_skill "ljagiello/ctf-skills" "ctf-reverse"
 call :install_skill "wshobson/agents" "anti-reversing-techniques"
 call :install_skill "cyberkaida/reverse-engineering-assistant" "deep-analysis"
+
+:: New: Binary deobfuscation add-ons
+call :install_skill "p4nda0s/bin-deobf-skills" "deobf-string"
+call :install_skill "p4nda0s/bin-deobf-skills" "deobf-indirect"
+call :install_skill "gmh5225/awesome-llvm-security" "llvm-obfuscation"
+call :install_skill "gmh5225/awesome-llvm-security" "binary-lifting"
+
+:: New: JS / PowerShell deobfuscation
+call :install_skill "mukul975/anthropic-cybersecurity-skills" "deobfuscating-javascript-malware"
+call :install_skill "mukul975/anthropic-cybersecurity-skills" "deobfuscating-powershell-obfuscated-malware"
+
+:: New: Toolchain & binary analysis
+call :install_skill "wshobson/agents" "binary-analysis-patterns"
+call :install_skill "trailofbits/skills" "yara-rule-authoring"
+call :install_skill "trailofbits/skills-curated" "ghidra-headless"
+call :install_skill "yfe404/frida-17-skill" "frida-17"
+call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineering-malware-with-ghidra"
+call :install_skill "zhaoxuya520/reverse-skill" "radare2"
 
 echo.
 echo   --------------------------------------------

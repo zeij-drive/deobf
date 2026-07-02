@@ -32,6 +32,24 @@ SKILLS=(
   "ljagiello/ctf-skills:ctf-reverse"
   "wshobson/agents:anti-reversing-techniques"
   "cyberkaida/reverse-engineering-assistant:deep-analysis"
+
+  # ── P3: Binary deobfuscation add-ons ──
+  "p4nda0s/bin-deobf-skills:deobf-string"
+  "p4nda0s/bin-deobf-skills:deobf-indirect"
+  "gmh5225/awesome-llvm-security:llvm-obfuscation"
+  "gmh5225/awesome-llvm-security:binary-lifting"
+
+  # ── P3: JS / PowerShell deobfuscation ──
+  "mukul975/anthropic-cybersecurity-skills:deobfuscating-javascript-malware"
+  "mukul975/anthropic-cybersecurity-skills:deobfuscating-powershell-obfuscated-malware"
+
+  # ── P3: Toolchain & binary analysis ──
+  "wshobson/agents:binary-analysis-patterns"
+  "trailofbits/skills:yara-rule-authoring"
+  "trailofbits/skills-curated:ghidra-headless"
+  "yfe404/frida-17-skill:frida-17"
+  "mukul975/anthropic-cybersecurity-skills:reverse-engineering-malware-with-ghidra"
+  "zhaoxuya520/reverse-skill:radare2"
 )
 
 GLOBAL_FLAG="-g"
