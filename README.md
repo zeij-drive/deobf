@@ -8,11 +8,17 @@
 
 ### ⚡ 一键安装
 
+**安装调度器（轻量）：**
 ```bash
 npx skills add zeij-drive/deobf -g -y
 ```
 
-> 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 一键安装，自动识别所有支持的 agent 平台。
+**安装全部 21 个子 skill + 调度器（一条命令）：**
+```bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+```
+
+> 无需克隆仓库，`curl | bash` 自动安装所有子 skill 和调度器。
 
 ---
 
@@ -53,22 +59,28 @@ npx skills add zeij-drive/deobf -g -y
 
 ## 🚀 快速开始
 
-### 方式 0：Skills.sh 一键安装（最推荐 🌟）
+### 方式 0：curl | bash 一键全量安装（最推荐 🌟）
+
+一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+```
+
+这一条命令即可完成：
+- 自动安装全部 **21 个** 反混淆相关的子 skill（来自 8 个 GitHub 仓库）
+- 自动安装 `deobf-all` 调度 skill
+- 自动注册到所有已安装的 agent 平台
+
+### 方式 1：Skills.sh 一键安装（安装调度器）
 
 ```bash
 npx skills add zeij-drive/deobf -g -y
 ```
 
-这一条命令即可：
-- 自动发现仓库中的 `deobf-all` 调度 skill
-- 安装到全局 skill 目录（`~/.agents/skills/deobf-all/`）
-- 自动注册到所有已安装的 agent 平台（Claude Code、Cursor、Codex、Gemini CLI 等）
+> 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 安装 `deobf-all` 调度 skill。首次调用时会自动 `read_skill` 拉起子 skill。
 
-> 📖 在 [skills.sh/zeij-drive/deobf](https://skills.sh/zeij-drive/deobf) 查看详情和安装量。
-
-安装调度 skill 后，首次调用 `/deobf-all` 时它会自动 `read_skill` 拉起全部 21 个子 skill。如果你希望离线安装或同时预装所有子 skill，请用下方的方式 1。
-
-### 方式 1：自动安装脚本（推荐）
+### 方式 2：自动安装脚本（推荐）
 
 ```bash
 # 克隆仓库
@@ -89,7 +101,7 @@ install.bat
 - 如果在当前 workspace 中运行，也会安装到本地 Reasonix skill 路径
 - 提供 `--local` 和 `--dry-run` 参数，方便更安全的安装
 
-### 方式 2：手动安装
+### 方式 3：手动安装
 
 ```bash
 # 安装所有子 skill（P0-P2）
@@ -125,7 +137,7 @@ mkdir -p ~/.agents/skills/deobf-all
 cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
 ```
 
-### 方式 3：一键安装完整 Yaklang
+### 方式 4：一键安装完整 Yaklang
 
 如果你想要 **完整** 的 yaklang hack-skills 集合（103 个安全 skill，包含上面全部 5 个 yaklang 子 skill）：
 

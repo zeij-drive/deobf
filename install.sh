@@ -11,6 +11,9 @@
 #    ./install.sh --force      # reinstall even if already installed
 #    ./install.sh --no-deps    # skip sub-skills, only install dispatcher
 #
+#    # One-liner (no clone needed):
+#    curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+#
 #  Requirements: Node.js >= 18, npm, npx
 # ============================================================
 
@@ -111,10 +114,21 @@ echo "  Node.js: $NODE_VERSION"
 echo ""
 
 # ── Determine install dir ────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd 2>/dev/null || true)"
+elif [ -f "$0" ] && [ "${0#-}" = "$0" ]; then
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd 2>/dev/null || true)"
+fi
 
 if [ -z "$GLOBAL_FLAG" ]; then
-  SKILL_DIR="${SCRIPT_DIR}/.agents/skills/deobf-all"
+  if [ -n "$SCRIPT_DIR" ]; then
+    SKILL_DIR="${SCRIPT_DIR}/.agents/skills/deobf-all"
+  else
+    echo "  ⚠️  --local requires a local script; falling back to global"
+    GLOBAL_FLAG="-g"
+    SKILL_DIR="${HOME}/.agents/skills/deobf-all"
+  fi
 else
   SKILL_DIR="${HOME}/.agents/skills/deobf-all"
 fi
@@ -123,16 +137,18 @@ fi
 if [ -d "$SKILL_DIR" ] && ! $FORCE; then
   echo "  ⏩ deobf-all (dispatcher) already installed at $SKILL_DIR — skipping"
 elif $DRY_RUN; then
-  echo "  🔍 [DRY-RUN] Would install: deobf-all → $SKILL_DIR"
+  echo "  🔍 [DRY-RUN] Would install: deobf-all dispatcher"
 else
   echo "  📦 Installing deobf-all (dispatcher)..."
   mkdir -p "$SKILL_DIR"
-  if [ -f "$SCRIPT_DIR/deobf-all/SKILL.md" ]; then
-    cp "$SCRIPT_DIR/deobf-all/SKILL.md" "$SKILL_DIR/SKILL.md"
-    echo "  ✅ deobf-all installed → $SKILL_DIR"
+  if [ -f "${SCRIPT_DIR:-.}/deobf-all/SKILL.md" ]; then
+    cp "${SCRIPT_DIR}/deobf-all/SKILL.md" "$SKILL_DIR/SKILL.md"
+    echo "  ✅ deobf-all installed → $SKILL_DIR (local)"
   else
-    echo "  ⚠️  deobf-all/SKILL.md not found in repo"
-    echo "     Install manually: npx skills add zeij-drive/deobf -g -y"
+    # Fallback: install via npx skills (works with curl|bash too)
+    echo "     (local not found, installing via npx skills...)"
+    npx skills add zeij-drive/deobf -g -y &>/dev/null
+    echo "  ✅ deobf-all installed via npx skills add zeij-drive/deobf"
   fi
 fi
 echo ""
