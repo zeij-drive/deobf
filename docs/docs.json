@@ -45,15 +45,51 @@
         "icon": "wrench",
         "expanded": false,
         "pages": [
-          "skills/code-obfuscation-deobfuscation",
-          "skills/ast-deobfuscation",
-          "skills/vm-and-bytecode-reverse",
-          "skills/anti-debugging-techniques",
-          "skills/symbolic-execution-tools",
-          "skills/binary-protection-bypass",
-          "skills/ctf-reverse",
-          "skills/anti-reversing-techniques",
-          "skills/deep-analysis"
+          {
+            "group": "P0 - 核心",
+            "expanded": false,
+            "pages": [
+              "skills/code-obfuscation-deobfuscation",
+              "skills/ast-deobfuscation"
+            ]
+          },
+          {
+            "group": "P1 - 按需",
+            "expanded": false,
+            "pages": [
+              "skills/vm-and-bytecode-reverse",
+              "skills/anti-debugging-techniques",
+              "skills/symbolic-execution-tools"
+            ]
+          },
+          {
+            "group": "P2 - 辅助",
+            "expanded": false,
+            "pages": [
+              "skills/binary-protection-bypass",
+              "skills/ctf-reverse",
+              "skills/anti-reversing-techniques",
+              "skills/deep-analysis"
+            ]
+          },
+          {
+            "group": "P3 - 扩展工具链",
+            "expanded": false,
+            "pages": [
+              "skills/deobf-string",
+              "skills/deobf-indirect",
+              "skills/llvm-obfuscation",
+              "skills/binary-lifting",
+              "skills/deobfuscating-javascript-malware",
+              "skills/deobfuscating-powershell-obfuscated-malware",
+              "skills/binary-analysis-patterns",
+              "skills/yara-rule-authoring",
+              "skills/ghidra-headless",
+              "skills/reverse-engineering-malware-with-ghidra",
+              "skills/frida-17",
+              "skills/radare2"
+            ]
+          }
         ]
       },
       {

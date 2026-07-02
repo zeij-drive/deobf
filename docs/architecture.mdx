@@ -36,12 +36,26 @@ deobf-all (调度器)
        ├── ctf-reverse                      （CTF 方法论）
        ├── anti-reversing-techniques        （反逆向规避）
        └── deep-analysis                    （全面分类）
+
+  └─── P3 Skills（扩展工具链）
+       ├── deobf-string                     （字符串反混淆）
+       ├── deobf-indirect                   （间接跳转反混淆）
+       ├── llvm-obfuscation                 （LLVM 混淆分析）
+       ├── binary-lifting                   （二进制提升）
+       ├── deobfuscating-javascript-malware （JS 恶意代码反混淆）
+       ├── deobfuscating-powershell-obfuscated-malware （PowerShell 反混淆）
+       ├── binary-analysis-patterns         （二进制分析模式）
+       ├── yara-rule-authoring              （YARA 规则）
+       ├── ghidra-headless                  （Ghidra 无头模式）
+       ├── reverse-engineering-malware-with-ghidra（Ghidra 恶意代码逆向）
+       ├── frida-17                         （Frida 动态插桩）
+       └── radare2                          （radare2 逆向工具链）
 ```
 
 ## 调度流程
 
 1. **激活**：用户调用 `/deobf-all` 或 `run_skill(name="deobf-all")`
-2. **全量加载**：通过 `read_skill` 并行加载全部 9 个子 skill 到 agent 上下文
+2. **分层加载**：通过 `read_skill` 先加载 P0 核心 skill，再按需加载 P1/P2/P3 skill 到 agent 上下文
 3. **分类**：根据目标文件类型和混淆特征进行分类
 4. **路由**：按照决策树选择最优子 skill 组合
 5. **执行**：按步骤应用反混淆工作流
@@ -53,6 +67,6 @@ deobf-all (调度器)
 |------|------|
 | 统一入口 | 用户只需一个命令，无需记忆每个 skill |
 | 智能路由 | 根据目标特征自动选择，而非暴力加载 |
-| 分层优先级 | P0/P1/P2 分级，确保关键能力始终可用 |
+| 分层优先级 | P0/P1/P2/P3 四级分级，确保关键能力始终可用 |
 | 可扩展 | 新增子 skill 只需更新路由表 |
 | 渐进式处理 | 从静态到动态，从简单到复杂 |

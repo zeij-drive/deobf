@@ -1,29 +1,33 @@
 ---
 title: 快速开始
-description: 一条命令安装并运行 deobf-all，按需加载子 skill
+description: 一条命令安装并运行 deobf-all，支持 21 个子 skill 按需加载
 icon: rocket
 ---
 
 # 快速开始
 
-## 方式 0：Skills.sh 一键安装（最推荐）
+## 方式 0：curl | bash 一键全量安装（最推荐 🌟）
+
+一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+```
+
+这一条命令即可完成：
+- 自动安装全部 **21 个** 反混淆相关的子 skill（来自 8 个 GitHub 仓库）
+- 自动安装 `deobf-all` 调度 skill
+- 自动注册到所有已安装的 agent 平台
+
+## 方式 1：Skills.sh 一键安装（安装调度器）
 
 ```bash
 npx skills add zeij-drive/deobf -g -y
 ```
 
-这一条命令即可：
-- 自动发现仓库中的 `deobf-all` 调度 skill
-- 安装到全局 skill 目录（`~/.agents/skills/deobf-all/`）
-- 自动注册到所有已安装的 agent 平台（Claude Code、Cursor、Codex、Gemini CLI 等）
+> 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 安装 `deobf-all` 调度 skill。首次调用时会自动拉起子 skill。
 
-<Info>
-在 [skills.sh/zeij-drive/deobf](https://skills.sh/zeij-drive/deobf) 查看详情和安装量。
-</Info>
-
-安装调度 skill 后，首次调用 `/deobf-all` 时它会自动 `read_skill` 拉起全部 9 个子 skill。如果你希望离线安装或同时预装所有子 skill，请用下方的方式 1。
-
-## 方式 1：克隆仓库 + 安装脚本
+## 方式 2：克隆仓库 + 安装脚本
 
 <Steps>
 
@@ -51,7 +55,7 @@ cd deobf
 </Tabs>
 
 安装脚本将自动完成：
-- 通过 `npx skills add` 全局安装全部 **9 个子 skill**
+- 通过 `npx skills add` 全局安装全部 **21 个子 skill**
 - 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
 - 如果在当前 workspace 中运行，也会安装到本地 skill 路径
 
@@ -78,6 +82,8 @@ cd deobf
 |------|------|
 | `--local` | 将技能安装到当前 workspace，不影响全局目录 |
 | `--dry-run` | 只预览将要安装的技能，不真正执行安装 |
+| `--force` | 强制重新安装已存在的 skill |
+| `--no-deps` | 仅安装调度器，跳过子 skill |
 | `--help` | 显示帮助信息 |
 
 ```bash
@@ -86,6 +92,9 @@ cd deobf
 
 # 预览安装内容
 ./install.sh --dry-run
+
+# 仅安装调度器
+./install.sh --no-deps
 ```
 
 <Tip>

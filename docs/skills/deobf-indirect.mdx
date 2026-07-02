@@ -1,0 +1,27 @@
+---
+title: deobf-indirect
+description: 间接跳转反混淆 — 使用符号执行和 BFS 恢复控制流
+icon: git-branch
+tag: P3
+---
+
+# deobf-indirect
+
+<Info>
+**来源**: [p4nda0s/bin-deobf-skills](https://github.com/p4nda0s/bin-deobf-skills) &nbsp;·&nbsp; **安装量**: 55 &nbsp;·&nbsp; **优先级**: P3
+</Info>
+
+间接跳转反混淆 Skill，使用符号执行和 BFS 遍历恢复被混淆的控制流。
+
+## 核心能力
+
+- CSEL + BR 间接分支分析
+- 符号执行控制流恢复
+- BFS 遍历路径探索
+- 控制流图重建
+
+## 适用场景
+
+- 二进制中大量间接跳转
+- OLLVM 控制流扁平化残留
+- 自定义混淆器的间接分支还原
