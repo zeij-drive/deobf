@@ -26,19 +26,41 @@
   "navigation": {
     "groups": [
       {
-        "group": "开始",
-        "icon": "rocket",
-        "pages": ["introduction", "quickstart", "requirements"]
-      },
-      {
-        "group": "安装",
-        "icon": "download",
-        "pages": ["installation/skills-sh", "installation/auto-install", "installation/manual-install", "installation/full-yaklang"]
-      },
-      {
-        "group": "指南",
-        "icon": "book-open",
-        "pages": ["guides/how-it-works", "guides/routing-logic", "guides/cross-skill-coordination"]
+        "group": "入门指南",
+        "icon": "compass",
+        "expanded": false,
+        "pages": [
+          {
+            "group": "开始",
+            "icon": "rocket",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "requirements"
+            ]
+          },
+          {
+            "group": "安装",
+            "icon": "download",
+            "expanded": false,
+            "pages": [
+              "installation/skills-sh",
+              "installation/auto-install",
+              "installation/manual-install",
+              "installation/full-yaklang"
+            ]
+          },
+          {
+            "group": "指南",
+            "icon": "book-open",
+            "expanded": false,
+            "pages": [
+              "guides/how-it-works",
+              "guides/routing-logic",
+              "guides/cross-skill-coordination"
+            ]
+          }
+        ]
       },
       {
         "group": "技能参考",
@@ -98,14 +120,30 @@
         ]
       },
       {
-        "group": "示例",
-        "icon": "terminal",
-        "pages": ["examples/vmprotect-binary", "examples/obfuscator-io-js", "examples/ctf-reverse-challenge"]
-      },
-      {
-        "group": "其他",
+        "group": "更多",
         "icon": "ellipsis",
-        "pages": ["architecture", "checklists", "contributing", "license"]
+        "expanded": false,
+        "pages": [
+          {
+            "group": "示例",
+            "icon": "terminal",
+            "pages": [
+              "examples/vmprotect-binary",
+              "examples/obfuscator-io-js",
+              "examples/ctf-reverse-challenge"
+            ]
+          },
+          {
+            "group": "其他",
+            "icon": "ellipsis",
+            "pages": [
+              "architecture",
+              "checklists",
+              "contributing",
+              "license"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -123,7 +161,10 @@
     "url": "/quickstart"
   },
   "topbarLinks": [
-    { "name": "GitHub", "url": "https://github.com/zeij-drive/deobf" }
+    {
+      "name": "GitHub",
+      "url": "https://github.com/zeij-drive/deobf"
+    }
   ],
   "footerSocials": {
     "github": "https://github.com/zeij-drive/deobf"
