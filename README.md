@@ -18,7 +18,16 @@ npx skills add zeij-drive/deobf -g -y
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-> 无需克隆仓库，`curl | bash` 自动安装所有子 skill 和调度器。
+**Windows 一键安装：**
+```powershell
+curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && %TEMP%\deobf.bat
+```
+或使用 PowerShell：
+```powershell
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```
+
+> 无需克隆仓库，自动安装所有子 skill 和调度器。
 
 ---
 
@@ -59,12 +68,23 @@ curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | 
 
 ## 🚀 快速开始
 
-### 方式 0：curl | bash 一键全量安装（最推荐 🌟）
+### 方式 0：curl | bash / Windows 一键全量安装（最推荐 🌟）
 
 一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
 
+**macOS / Linux：**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+```
+
+**Windows（cmd）：**
+```cmd
+curl.exe -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -o %TEMP%\deobf.bat && %TEMP%\deobf.bat
+```
+
+**Windows（PowerShell）：**
+```powershell
+powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
 ```
 
 这一条命令即可完成：

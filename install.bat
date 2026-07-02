@@ -76,8 +76,14 @@ if exist "%SKILL_DIR%\SKILL.md" if "!FORCE!"=="0" (
 ) else (
     echo   Installing deobf-all ^(dispatcher^)...
     if not exist "%SKILL_DIR%" mkdir "%SKILL_DIR%"
-    copy /Y "%SCRIPT_DIR%deobf-all\SKILL.md" "%SKILL_DIR%\SKILL.md" >nul 2>&1
-    echo   OK deobf-all installed to !SKILL_DIR!
+    if exist "%SCRIPT_DIR%deobf-all\SKILL.md" (
+        copy /Y "%SCRIPT_DIR%deobf-all\SKILL.md" "%SKILL_DIR%\SKILL.md" >nul 2>&1
+        echo   OK deobf-all installed to !SKILL_DIR! ^(local^)
+    ) else (
+        echo     ^(local not found, installing via npx skills...^)
+        npx skills add zeij-drive/deobf -g -y >nul 2>&1
+        echo   OK deobf-all installed via npx skills
+    )
 )
 echo.
 
