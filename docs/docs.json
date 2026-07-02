@@ -107,7 +107,12 @@
               "skills/ghidra-headless",
               "skills/reverse-engineering-malware-with-ghidra",
               "skills/frida-17",
-              "skills/radare2"
+              "skills/radare2",
+              "skills/java-decompile",
+              "skills/jadx",
+              "skills/apktool",
+              "skills/reverse-engineering-android-malware-with-jadx",
+              "skills/firebase-apk-scanner"
             ]
           }
         ]
