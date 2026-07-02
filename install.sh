@@ -53,13 +53,6 @@ SKILLS=(
   "yfe404/frida-17-skill:frida-17"
   "mukul975/anthropic-cybersecurity-skills:reverse-engineering-malware-with-ghidra"
   "zhaoxuya520/reverse-skill:radare2"
-
-  # ── P3: Java bytecode deobfuscation ──
-  "smithery.ai/jadx"
-  "quarkusio/quarkusdev-skills:java-decompile"
-  "brownfinesecurity/iothackbot:apktool"
-  "trailofbits/skills:firebase-apk-scanner"
-  "mukul975/anthropic-cybersecurity-skills:reverse-engineering-android-malware-with-jadx"
 )
 
 GLOBAL_FLAG="-g"
@@ -180,20 +173,13 @@ for entry in "${SKILLS[@]}"; do
   CURRENT=$((CURRENT + 1))
 
   # If no colon, entry has no separate skill name → install full repo
-  if [ "$REPO" = "$SKILL" ]; then
-    FULL_REPO="$REPO"
-    HAS_SKILL=false
-  else
-    FULL_REPO="$REPO"
-    HAS_SKILL=true
-  fi
+for entry in "${SKILLS[@]}"; do
+  REPO="${entry%%:*}"
+  SKILL="${entry##*:}"
+  CURRENT=$((CURRENT + 1))
 
   if $DRY_RUN; then
-    if $HAS_SKILL; then
-      echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
-    else
-      echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO $GLOBAL_FLAG -y"
-    fi
+    echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
     SUCCESS=$((SUCCESS + 1))
     continue
   fi
@@ -208,31 +194,16 @@ for entry in "${SKILLS[@]}"; do
 
   printf "  📦 [%d/%d] %-42s → %-32s ... " "$CURRENT" "$TOTAL" "$REPO" "$SKILL"
 
-  if $HAS_SKILL; then
-    NPX_CMD="npx skills add \"$REPO\" --skill \"$SKILL\" $GLOBAL_FLAG -y"
-  else
-    NPX_CMD="npx skills add \"$REPO\" $GLOBAL_FLAG -y"
-  fi
-
-  if eval $NPX_CMD &>/dev/null; then
+  if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y &>/dev/null; then
     echo "✅"
     SUCCESS=$((SUCCESS + 1))
   else
     echo "❌ (retrying --full-depth...)"
-    if $HAS_SKILL; then
-      RETRY_CMD="npx skills add \"$REPO\" --skill \"$SKILL\" $GLOBAL_FLAG -y --full-depth"
-    else
-      RETRY_CMD="npx skills add \"$REPO\" $GLOBAL_FLAG -y --full-depth"
-    fi
-    if eval $RETRY_CMD &>/dev/null 2>&1; then
+    if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y --full-depth &>/dev/null 2>&1; then
       echo "         ✅ (recovered)"
       SUCCESS=$((SUCCESS + 1))
     else
-      if $HAS_SKILL; then
-        echo "         ❌ Failed — run manually: npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
-      else
-        echo "         ❌ Failed — run manually: npx skills add $REPO $GLOBAL_FLAG -y"
-      fi
+      echo "         ❌ Failed — run manually: npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
       FAILED=$((FAILED + 1))
     fi
   fi

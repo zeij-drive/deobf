@@ -1,6 +1,6 @@
 # AGENTS.md — deobf-all
 
-AI Agent 统一反混淆技能套件。一个调度 skill 加载 26 个专业反混淆/逆向子 skill，根据目标类型按需加载。
+AI Agent 统一反混淆技能套件。一个调度 skill 加载 21 个专业反混淆/逆向子 skill，根据目标类型按需加载。
 
 ## Project
 
@@ -50,9 +50,9 @@ deobf-all/              # 仓库根
 ```
 
 **调度器技能层级**:
-- **P0** (核心 + Java): `code-obfuscation-deobfuscation`, `ast-deobfuscation`, `jadx`
-- **P1** (按需): `vm-and-bytecode-reverse`, `anti-debugging-techniques`, `symbolic-execution-tools`, `java-decompile`, `apktool`
-- **P2** (辅助): `binary-protection-bypass`, `ctf-reverse`, `anti-reversing-techniques`, `deep-analysis`, `firebase-apk-scanner`, `reverse-engineering-android-malware-with-jadx`
+- **P0** (核心): `code-obfuscation-deobfuscation`, `ast-deobfuscation`
+- **P1** (按需): `vm-and-bytecode-reverse`, `anti-debugging-techniques`, `symbolic-execution-tools`
+- **P2** (辅助): `binary-protection-bypass`, `ctf-reverse`, `anti-reversing-techniques`, `deep-analysis`
 - **P3** (扩展): `deobf-string`, `deobf-indirect`, `llvm-obfuscation`, `binary-lifting`, `deobfuscating-javascript-malware`, `deobfuscating-powershell-obfuscated-malware`, `binary-analysis-patterns`, `yara-rule-authoring`, `ghidra-headless`, `reverse-engineering-malware-with-ghidra`, `frida-17`, `radare2`
 
 ## Conventions

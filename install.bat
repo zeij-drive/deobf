@@ -96,7 +96,7 @@ if "!NO_DEPS!"=="1" (
 :: Install each skill
 set /a SUCCESS=0
 set /a FAILED=0
-set /a TOTAL=26
+set /a TOTAL=21
 
 call :install_skill "yaklang/hack-skills" "code-obfuscation-deobfuscation"
 call :install_skill "lwjjike/xbsreverseskill" "ast-deobfuscation"
@@ -126,13 +126,7 @@ call :install_skill "yfe404/frida-17-skill" "frida-17"
 call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineering-malware-with-ghidra"
 call :install_skill "zhaoxuya520/reverse-skill" "radare2"
 
-:: New: Java bytecode deobfuscation
-call :install_repo "smithery.ai/jadx"
-call :install_skill "quarkusio/quarkusdev-skills" "java-decompile"
-call :install_skill "brownfinesecurity/iothackbot" "apktool"
-call :install_skill "trailofbits/skills" "firebase-apk-scanner"
-call :install_skill "mukul975/anthropic-cybersecurity-skills" "reverse-engineering-android-malware-with-jadx"
-
+:: Summary
 echo.
 echo   --------------------------------------------
 echo   Installed: %SUCCESS% / %TOTAL% sub-skills
@@ -174,42 +168,6 @@ if !ERRORLEVEL! equ 0 (
         set /a SUCCESS+=1
     ) else (
         echo     FAILED - run manually: npx skills add %REPO% --skill %SKILL% %GLOBAL_FLAG% -y
-        set /a FAILED+=1
-    )
-)
-goto :eof
-
-:install_repo
-set "REPO=%~1"
-set /a "NUM=SUCCESS+FAILED+1"
-
-:: Skip if already installed and not --force
-set "INSTALLED_DIR=%USERPROFILE%\.agents\skills\%REPO%"
-if exist "%INSTALLED_DIR%\SKILL.md" if "!FORCE!"=="0" (
-    echo   [%NUM%/%TOTAL%] %REPO% - already installed, skipping
-    set /a SUCCESS+=1
-    goto :eof
-)
-
-if "!DRY_RUN!"=="1" (
-    echo   [DRY-RUN] [%NUM%/%TOTAL%] npx skills add %REPO% %GLOBAL_FLAG% -y
-    set /a SUCCESS+=1
-    goto :eof
-)
-
-echo   [%NUM%/%TOTAL%] %REPO% ...
-npx skills add %REPO% %GLOBAL_FLAG% -y >nul 2>&1
-if !ERRORLEVEL! equ 0 (
-    echo     OK
-    set /a SUCCESS+=1
-) else (
-    echo     Retrying with --full-depth...
-    npx skills add %REPO% %GLOBAL_FLAG% -y --full-depth >nul 2>&1
-    if !ERRORLEVEL! equ 0 (
-        echo     OK ^(recovered^)
-        set /a SUCCESS+=1
-    ) else (
-        echo     FAILED - run manually: npx skills add %REPO% %GLOBAL_FLAG% -y
         set /a FAILED+=1
     )
 )

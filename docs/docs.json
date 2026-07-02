@@ -66,12 +66,11 @@
         "icon": "wrench",
         "pages": [
           {
-            "group": "P0 - 核心 + Java",
+            "group": "P0 - 核心",
             "expanded": false,
             "pages": [
               "skills/code-obfuscation-deobfuscation",
-              "skills/ast-deobfuscation",
-              "skills/jadx"
+              "skills/ast-deobfuscation"
             ]
           },
           {
@@ -80,9 +79,7 @@
             "pages": [
               "skills/vm-and-bytecode-reverse",
               "skills/anti-debugging-techniques",
-              "skills/symbolic-execution-tools",
-              "skills/java-decompile",
-              "skills/apktool"
+              "skills/symbolic-execution-tools"
             ]
           },
           {
@@ -92,9 +89,7 @@
               "skills/binary-protection-bypass",
               "skills/ctf-reverse",
               "skills/anti-reversing-techniques",
-              "skills/deep-analysis",
-              "skills/firebase-apk-scanner",
-              "skills/reverse-engineering-android-malware-with-jadx"
+              "skills/deep-analysis"
             ]
           },
           {
