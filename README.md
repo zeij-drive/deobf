@@ -1,6 +1,6 @@
 # 🛡️ deobf-all — AI Agent 统一反混淆技能套件
 
-> **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 21 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。
+> **一条命令加载整个反混淆武器库。** 一个主调度 skill，一次性拉起 26 个专业逆向工程 & 反混淆子 skill，并根据你的目标自动路由到最佳技能组合。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills Standard](https://img.shields.io/badge/Agent%20Skills-Standard-blue)](https://agentskills.io)
@@ -13,7 +13,7 @@
 npx skills add zeij-drive/deobf -g -y
 ```
 
-**安装全部 21 个子 skill + 调度器（一条命令）：**
+**安装全部 26 个子 skill + 调度器（一条命令）：**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
@@ -35,8 +35,8 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 
 **deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一入口。你不需要为不同的混淆类型手动加载各自的 skill，只需调用一次 `deobf-all`，它就会：
 
-1. **同时加载全部 21 个子 skill** 到 agent 上下文中
-2. **对你的目标进行分类**（原生二进制、JavaScript、字节码、CTF、未知类型）
+1. **同时加载全部 26 个子 skill** 到 agent 上下文中
+2. **对你的目标进行分类**（原生二进制、JavaScript、Java 字节码、CTF、未知类型）
 3. **路由到最优 skill 组合**，针对具体的混淆类型
 4. **引导完整的反混淆工作流**：分类 → 分析 → 反混淆 → 验证
 
@@ -65,12 +65,17 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 | 19 | **reverse-engineering-malware-with-ghidra** 🆕 | [mukul975/anthropic-cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 224 | Ghidra 恶意代码逆向 |
 | 20 | **frida-17** 🆕 | [yfe404/frida-17-skill](https://github.com/yfe404/frida-17-skill) | 1.2K | Frida 动态插桩框架 |
 | 21 | **radare2** 🆕 | [zhaoxuya520/reverse-skill](https://github.com/zhaoxuya520/reverse-skill) | 81 | radare2 逆向工具链 |
+| 22 | **jadx** 🆕 | [smithery.ai](https://github.com/smithery.ai/jadx) | 37 | Java/APK 反编译器：字节码分析、类重构 |
+| 23 | **java-decompile** 🆕 | [quarkusio/quarkusdev-skills](https://github.com/quarkusio/quarkusdev-skills) | 37 | Java 字节码反编译：CFR/Procyon/Fernflower |
+| 24 | **apktool** 🆕 | [brownfinesecurity/iothackbot](https://github.com/brownfinesecurity/iothackbot) | 359 | Android APK 解包、smali、资源提取 |
+| 25 | **firebase-apk-scanner** 🆕 | [trailofbits/skills](https://github.com/trailofbits/skills) | 3.5K | Firebase APK 安全扫描分析 |
+| 26 | **reverse-engineering-android-malware-with-jadx** 🆕 | [mukul975/anthropic-cybersecurity-skills](https://github.com/mukul975/anthropic-cybersecurity-skills) | 127 | JADX Android 恶意代码逆向 |
 
 ## 🚀 快速开始
 
 ### 方式 0：curl | bash / Windows 一键全量安装（最推荐 🌟）
 
-一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
+一条命令安装**全部 26 个子 skill + deobf-all 调度器**，无需克隆仓库：
 
 **macOS / Linux：**
 ```bash
@@ -88,7 +93,7 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 ```
 
 这一条命令即可完成：
-- 自动安装全部 **21 个** 反混淆相关的子 skill（来自 8 个 GitHub 仓库）
+- 自动安装全部 **26 个** 反混淆相关的子 skill（来自 10 个 GitHub 仓库）
 - 自动安装 `deobf-all` 调度 skill
 - 自动注册到所有已安装的 agent 平台
 
@@ -116,7 +121,7 @@ install.bat
 ```
 
 脚本将完成：
-- 通过 `npx skills add` 全局安装全部 21 个子 skill
+- 通过 `npx skills add` 全局安装全部 26 个子 skill
 - 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
 - 如果在当前 workspace 中运行，也会安装到本地 Reasonix skill 路径
 - 提供 `--local` 和 `--dry-run` 参数，方便更安全的安装
@@ -190,7 +195,7 @@ run_skill(name="deobf-all")
 
 ### 调用后会发生什么
 
-1. **全部 21 个子 skill** 通过 `read_skill` 加载到 agent 上下文中
+1. **全部 26 个子 skill** 通过 `read_skill` 加载到 agent 上下文中
 2. Agent **对你的目标进行分类**，依据文件类型和混淆特征
 3. Agent **路由到最优 skill 组合**：
 
@@ -320,6 +325,9 @@ MIT 许可证 — 详见 [LICENSE](LICENSE)。
 - `trailofbits/skills-curated` — Apache 2.0
 - `yfe404/frida-17-skill` — 见对应仓库
 - `zhaoxuya520/reverse-skill` — 见对应仓库
+- `smithery.ai/jadx` — 见对应仓库
+- `quarkusio/quarkusdev-skills` — 见对应仓库
+- `brownfinesecurity/iothackbot` — 见对应仓库
 
 ## ⚠️ 免责声明
 

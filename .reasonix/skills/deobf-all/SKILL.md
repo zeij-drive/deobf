@@ -35,13 +35,18 @@ Instead: triage → load P0 → route → load P1/P2 only if needed.
 |---|-------|---------|-------|
 | 1 | `code-obfuscation-deobfuscation` | Native binary deobf: CFF, opaque predicates, string encrypt, import hiding, anti-disasm | **P0** |
 | 2 | `ast-deobfuscation` | JavaScript AST deobf: pattern detection, pipeline, site-specific adapters | **P0** (JS only) |
-| 3 | `vm-and-bytecode-reverse` | VM protectors (VMProtect/Themida), custom VM dispatcher, opcode mapping | **P1** |
-| 4 | `anti-debugging-techniques` | Anti-debug detection & bypass (ptrace, PEB, timing, TLS, VEH) | **P1** |
-| 5 | `symbolic-execution-tools` | angr/Z3/Triton: automated constraint solving, emulation unpacking | **P1** |
-| 6 | `binary-protection-bypass` | ASLR/NX/PIE/Canary/RELRO bypass | **P2** |
-| 7 | `ctf-reverse` | CTF reverse engineering methodology | **P2** |
-| 8 | `anti-reversing-techniques` | Anti-reversing identification & circumvention | **P2** |
-| 9 | `deep-analysis` | Deep reverse engineering triage (comprehensive analysis) | **P2** |
+| 3 | `jadx` | Java/APK decompiler: JADX bytecode analysis & class reconstruction | **P0** (Java) |
+| 4 | `java-decompile` | Java bytecode decompilation: CFR/Procyon/Fernflower workflows | **P1** |
+| 5 | `apktool` | Android APK unpacking, smali/baksmali, resource extraction | **P1** |
+| 6 | `vm-and-bytecode-reverse` | VM protectors (VMProtect/Themida), custom VM dispatcher, opcode mapping | **P1** |
+| 7 | `anti-debugging-techniques` | Anti-debug detection & bypass (ptrace, PEB, timing, TLS, VEH) | **P1** |
+| 8 | `symbolic-execution-tools` | angr/Z3/Triton: automated constraint solving, emulation unpacking | **P1** |
+| 9 | `binary-protection-bypass` | ASLR/NX/PIE/Canary/RELRO bypass | **P2** |
+| 10 | `ctf-reverse` | CTF reverse engineering methodology | **P2** |
+| 11 | `anti-reversing-techniques` | Anti-reversing identification & circumvention | **P2** |
+| 12 | `deep-analysis` | Deep reverse engineering triage (comprehensive analysis) | **P2** |
+| 13 | `firebase-apk-scanner` | Firebase APK security scanning & analysis | **P2** |
+| 14 | `reverse-engineering-android-malware-with-jadx` | Android malware analysis with JADX | **P2** |
 
 ## 2. TRIAGE — Do This First (before any read_skill)
 
@@ -58,18 +63,21 @@ Inspect the target and determine:
 
 Based on triage, `read_skill` **only** for the skills marked ✓:
 
-| Target | P0 core-deobf | P0 ast-deobf | P1 vm-reverse | P1 anti-debug | P1 symbolic | P2 bin-bypass | P2 ctf-rev | P2 anti-rev | P2 deep |
-|--------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| Native binary, general | ✓ | | | | | | | | |
-| Native + VM protection | ✓ | | ✓ | | | | | | |
-| Native + VM + anti-debug | ✓ | | ✓ | ✓ | | | | | |
-| Native + CFF (OLLVM) | ✓ | | | | ✓ | | | | |
-| Native + packed + anti-rev | ✓ | | | | | ✓ | | ✓ | |
-| JavaScript (any) | | ✓ | | | | | | | |
-| JS + heavy obfuscation | ✓ | ✓ | | | | | | | |
-| DotNet/Java/Python bytecode | ✓ | | ✓ | | ✓ | | | | |
-| CTF reverse challenge | ✓ | | | | | | ✓ | | ✓ |
-| Unknown / unclear | | | | | | | | | ✓ |
+| Target | P0 core-deobf | P0 ast-deobf | P0 jadx | P1 java-dec | P1 apktool | P1 vm-reverse | P1 anti-debug | P1 symbolic | P2 bin-bypass | P2 ctf-rev | P2 anti-rev | P2 deep | P2 apk-scan | P2 jadx-rev |
+|--------|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| Native binary, general | ✓ | | | | | | | | | | | | | |
+| Native + VM protection | ✓ | | | | | ✓ | | | | | | | | |
+| Native + VM + anti-debug | ✓ | | | | | ✓ | ✓ | | | | | | | |
+| Native + CFF (OLLVM) | ✓ | | | | | | | ✓ | | | | | | |
+| Native + packed + anti-rev | ✓ | | | | | | | | ✓ | | ✓ | | | |
+| JavaScript (any) | | ✓ | | | | | | | | | | | | |
+| JS + heavy obfuscation | ✓ | ✓ | | | | | | | | | | | | |
+| **Java bytecode / JAR / class** | | | ✓ | ✓ | ✓ | | | | | | | | | |
+| Java + ProGuard/Allatori | ✓ | | ✓ | ✓ | | | | ✓ | | | | | | |
+| Android APK (DEX) | | | ✓ | | ✓ | | | | | | | | ✓ | ✓ |
+| DotNet/Python bytecode | ✓ | | | | | ✓ | | ✓ | | | | | | |
+| CTF reverse challenge | ✓ | | | | | | | | | ✓ | | ✓ | | |
+| Unknown / unclear | | | | | | | | | | | | ✓ | | |
 
 **Rule**: If a cell is empty, do NOT load that skill. This keeps tool calls minimal.
 
@@ -79,7 +87,10 @@ Based on triage, `read_skill` **only** for the skills marked ✓:
 Inspect the target. Use `read_file` for source code or `file`/`DIE`/`PEiD` output for binaries. Produce the triage line.
 
 ### Step 2: Load P0 (1–2 tool calls)
-`read_skill` for the P0 skill(s) the route demands. For native binaries that's `code-obfuscation-deobfuscation`; for JavaScript that's `ast-deobfuscation`.
+`read_skill` for the P0 skill(s) the route demands:
+- Native binaries → `code-obfuscation-deobfuscation`
+- JavaScript → `ast-deobfuscation`
+- Java bytecode / JAR / APK → `jadx`
 
 ### Step 3: Load P1/P2 only if routed (0–3 tool calls)
 Only `read_skill` for P1/P2 skills that the routing matrix marks ✓ for your target type.
@@ -89,6 +100,7 @@ Only `read_skill` for P1/P2 skills that the routing matrix marks ✓ for your ta
 - **Dynamic if blocked**: debugger scripting, emulation, symbolic execution
 - For JS: run `scripts/detect-patterns.js` from ast-deobfuscation first, then apply the matching pipeline
 - For native: identify protector (VMProtect/Themida/OLLVM/custom) before choosing strategy
+- **For Java**: decompile with JADX first, then analyze reconstructed source; if ProGuard obfuscation, rename remapping + string decryption
 
 ### Step 5: Validate
 - Compare deobfuscated output to original symptoms
@@ -125,6 +137,16 @@ This is the **only** scenario where you should load a P2 skill before P0.
 4. [ ] Apply matching pipeline (CFF reduction, string decryption, dispatcher inline)
 5. [ ] Heavy obfuscation? → also load `code-obfuscation-deobfuscation`
 6. [ ] Re-parse after each stage → validate
+
+### Java Bytecode / APK
+1. [ ] Triage: identify format (JAR/class/DEX/APK), check for obfuscation (ProGuard/Allatori/DashO/ZKM)
+2. [ ] Load P0: `jadx` — decompile bytecode to readable Java source
+3. [ ] APK? → Load `apktool` to unpack resources, smali, AndroidManifest
+4. [ ] ProGuard/Allatori? → also load `code-obfuscation-deobfuscation` for generic deobf techniques
+5. [ ] String encryption? → identify decryption routines in decompiled source, extract key/algorithm
+6. [ ] Analyze reconstructed source, rename obfuscated identifiers
+7. [ ] For Android malware: load `reverse-engineering-android-malware-with-jadx`
+8. [ ] Decompile → analyze → validate
 
 ### CTF
 1. [ ] Load P2: `ctf-reverse` + `deep-analysis`
