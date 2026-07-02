@@ -1,7 +1,8 @@
+@chcp 65001 >nul 2>&1
 @echo off
 setlocal enabledelayedexpansion
 
-:: ── Self-remove Mark-of-the-Web (MOTW) ──
+:: -- Self-remove Mark-of-the-Web (MOTW) --
 :: If downloaded from internet via curl, Windows marks the file as untrusted.
 :: Unblock-File removes the Zone.Identifier ADS so the script can run.
 if exist "%~f0:Zone.Identifier" (
