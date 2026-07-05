@@ -26,56 +26,56 @@ for /f "tokens=*" %%v in ('node --version 2^>nul') do set "NODE_VER=%%v"
 echo Node.js: %NODE_VER%
 echo.
 
-:: ── Install deobf-all dispatcher ──
+:: === Install deobf-all dispatcher ===
 echo.
 echo === Installing deobf-all dispatcher ===
-npx skills add zeij-drive/deobf -g -y
+call npx skills add zeij-drive/deobf -g -y
 
-:: ── Install all 26 sub-skills ──
+:: === Install all 26 sub-skills ===
 echo.
 echo === Installing 26 sub-skills ===
 
 :: P0: Core deobfuscation
-npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
-npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
+call npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y
+call npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y
 
 :: P1: Helper deobfuscation (yaklang ecosystem)
-npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
-npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y
-npx skills add yaklang/hack-skills --skill symbolic-execution-tools -g -y
+call npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y
+call npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y
+call npx skills add yaklang/hack-skills --skill symbolic-execution-tools -g -y
 
 :: P2: Supplementary
-npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y
-npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
-npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
-npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
+call npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y
+call npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y
+call npx skills add wshobson/agents --skill anti-reversing-techniques -g -y
+call npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y
 
 :: P3: Binary deobfuscation add-ons
-npx skills add p4nda0s/bin-deobf-skills --skill deobf-string -g -y
-npx skills add p4nda0s/bin-deobf-skills --skill deobf-indirect -g -y
-npx skills add gmh5225/awesome-llvm-security --skill llvm-obfuscation -g -y
-npx skills add gmh5225/awesome-llvm-security --skill binary-lifting -g -y
+call npx skills add p4nda0s/bin-deobf-skills --skill deobf-string -g -y
+call npx skills add p4nda0s/bin-deobf-skills --skill deobf-indirect -g -y
+call npx skills add gmh5225/awesome-llvm-security --skill llvm-obfuscation -g -y
+call npx skills add gmh5225/awesome-llvm-security --skill binary-lifting -g -y
 
 :: P3: JS / PowerShell deobfuscation
-npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-javascript-malware -g -y
-npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-powershell-obfuscated-malware -g -y
+call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-javascript-malware -g -y
+call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-powershell-obfuscated-malware -g -y
 
 :: P3: Toolchain & binary analysis
-npx skills add wshobson/agents --skill binary-analysis-patterns -g -y
-npx skills add trailofbits/skills --skill yara-rule-authoring -g -y
-npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y
-npx skills add yfe404/frida-17-skill --skill frida-17 -g -y
-npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y
-npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y
+call npx skills add wshobson/agents --skill binary-analysis-patterns -g -y
+call npx skills add trailofbits/skills --skill yara-rule-authoring -g -y
+call npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y
+call npx skills add yfe404/frida-17-skill --skill frida-17 -g -y
+call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y
+call npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y
 
 :: P3: Java / Android deobfuscation
-npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y
-npx skills add brownfinesecurity/iothackbot --skill jadx -g -y
-npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
-npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
-npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
+call npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y
+call npx skills add brownfinesecurity/iothackbot --skill jadx -g -y
+call npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
+call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
+call npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
-:: ── Done ──
+:: === Done ===
 echo.
 echo ============================================
 echo   All done! Use /deobf-all to activate.
