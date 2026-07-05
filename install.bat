@@ -8,8 +8,8 @@ if exist "%~f0:Zone.Identifier" (
 )
 
 :: ============================================================
-::  deobf-all — Auto-Install Script (Windows)
-::  Flat sequential npx skills add — no subroutines, no goto.
+::  deobf-all ??Auto-Install Script (Windows)
+::  Flat sequential npx skills add ??no subroutines, no goto.
 :: ============================================================
 
 :: Check npx
@@ -26,12 +26,12 @@ for /f "tokens=*" %%v in ('node --version 2^>nul') do set "NODE_VER=%%v"
 echo Node.js: %NODE_VER%
 echo.
 
-:: ── Install deobf-all dispatcher ──
+:: ???? Install deobf-all dispatcher ????
 echo.
 echo === Installing deobf-all dispatcher ===
 npx skills add zeij-drive/deobf -g -y
 
-:: ── Install all 26 sub-skills ──
+:: ???? Install all 26 sub-skills ????
 echo.
 echo === Installing 26 sub-skills ===
 
@@ -75,7 +75,7 @@ npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
 npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
 npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
-:: ── Done ──
+:: ???? Done ????
 echo.
 echo ============================================
 echo   All done! Use /deobf-all to activate.
