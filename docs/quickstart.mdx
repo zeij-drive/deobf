@@ -1,6 +1,6 @@
 ---
 title: 快速开始
-description: 一条命令安装并运行 deobf-all，支持 21 个子 skill 按需加载
+description: 一条命令安装并运行 deobf-all，支持 26 个子 skill 按需加载
 icon: rocket
 ---
 
@@ -8,7 +8,7 @@ icon: rocket
 
 ## 方式 0：curl | bash / Windows 一键全量安装（最推荐 🌟）
 
-一条命令安装**全部 21 个子 skill + deobf-all 调度器**，无需克隆仓库：
+一条命令安装**全部 26 个子 skill + deobf-all 调度器**，无需克隆仓库：
 
 <Tabs>
   <Tab title="macOS / Linux">
@@ -21,14 +21,10 @@ icon: rocket
     powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
     ```
   </Tab>
-  <Tab title="Windows (curl)">
-    ```bash
-    curl -fsSLo %TEMP%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%TEMP%\deobf.bat"
-    ```
-  </Tab>
 </Tabs>
 
-安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 21 个子 skill**，上面的 PowerShell 或 curl 命令即可全量安装，无需克隆仓库。
+安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 26 个子 skill**，上面的 PowerShell 命令即可全量安装，无需克隆仓库。
+- 自动注册到所有已安装的 agent 平台
 
 ## 方式 1：Skills.sh 一键安装（安装调度器）
 
@@ -66,7 +62,7 @@ cd deobf
 </Tabs>
 
 安装脚本将自动完成：
-- 通过 `npx skills add` 全局安装全部 **21 个子 skill**
+- 通过 `npx skills add` 全局安装全部 **26 个子 skill**
 - 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
 - 如果在当前 workspace 中运行，也会安装到本地 skill 路径
 
