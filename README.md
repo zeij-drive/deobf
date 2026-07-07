@@ -20,9 +20,16 @@ npx skills add zeij-drive/deobf -g -y
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows 一键安装（PowerShell）：**
+**Windows 一键安装：**
+
+PowerShell（推荐 — 自动处理 MOTW 安全标记）：
 ```powershell
 powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```
+
+curl（Windows 10+ 自带，无需 PowerShell）：
+```bash
+curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
 ```
 
 > 安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 26 个子 skill**，上面的一键命令（PowerShell）即可全量安装，无需克隆仓库。
@@ -80,9 +87,16 @@ powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows（PowerShell）：**
+**Windows：**
+
+PowerShell（推荐 — 自动处理 MOTW 安全标记）：
 ```powershell
 powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```
+
+curl（Windows 10+ 自带）：
+```bash
+curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
 ```
 
 这一条命令即可完成：

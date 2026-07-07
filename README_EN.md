@@ -20,9 +20,14 @@ npx skills add zeij-drive/deobf -g -y
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows one-click (PowerShell):**
+**Windows one-click (PowerShell — handles MOTW):**
 ```powershell
 powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```
+
+**or (curl — Windows 10+):**
+```bash
+curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
 ```
 
 > No clone needed. Automatically installs all sub-skills and dispatcher.
@@ -80,9 +85,16 @@ Install **all 26 sub-skills + deobf-all dispatcher** without cloning:
 curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
 ```
 
-**Windows (PowerShell):**
+**Windows:**
+
+PowerShell (recommended — handles MOTW):
 ```powershell
 powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+```
+
+curl (Windows 10+):
+```bash
+curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
 ```
 
 This single command:

@@ -1,16 +1,33 @@
 @echo off
 setlocal enabledelayedexpansion
 
+:: ============================================================
+::  deobf-all — Auto-Install Script (Windows)
+::  Installs all deobfuscation-related agent skills at once.
+::  Flat sequential npx skills add — no subroutines, no goto.
+::
+::  Usage:
+::    install.bat              # install all skills (global)
+::    install.bat --local      # install to current project only
+::    install.bat --dry-run    # preview without installing
+::    install.bat --force      # reinstall even if already installed
+::    install.bat --no-deps    # skip sub-skills, only install dispatcher
+::    install.bat --help       # show this help message
+::
+::  One-liner (no clone needed, PowerShell — handles MOTW):
+::    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+::
+::  One-liner (no clone needed, curl — Windows 10+):
+::    curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
+::
+::  Requirements: Node.js >= 18, npm, npx
+:: ============================================================
+
 :: -- Self-remove Mark-of-the-Web (MOTW) --
 :: If downloaded from internet, Unblock-File removes the Zone.Identifier ADS.
 if exist "%~f0:Zone.Identifier" (
     powershell -c "Unblock-File '%~f0'" 2>nul
 )
-
-:: ============================================================
-::  deobf-all — Auto-Install Script (Windows)
-::  Flat sequential npx skills add — no subroutines, no goto.
-:: ============================================================
 
 :: Check npx
 where npx >nul 2>&1
@@ -81,4 +98,3 @@ echo ============================================
 echo   All done! Use /deobf-all to activate.
 echo ============================================
 echo.
-pause
