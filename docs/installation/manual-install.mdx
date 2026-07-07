@@ -1,6 +1,6 @@
 ---
 title: 手动安装
-description: 逐个手动安装 21 个子 skill 和调度器
+description: 逐个手动安装 26 个子 skill 和调度器
 icon: wrench
 ---
 
@@ -46,6 +46,11 @@ npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineeri
 npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y
 
 # ── Java / Android 反编译 ──
+npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y
+npx skills add brownfinesecurity/iothackbot --skill jadx -g -y
+npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
+npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
+npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
 ```
 
@@ -92,6 +97,11 @@ cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
   </AccordionItem>
   <AccordionItem title="仅需 Java / Android 反编译">
     ```bash
+    npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y
+    npx skills add brownfinesecurity/iothackbot --skill jadx -g -y
+    npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
+    npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
+    npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
     ```
   </AccordionItem>
 </Accordion>
