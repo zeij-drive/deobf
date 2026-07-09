@@ -154,7 +154,7 @@ else
   else
     # Fallback: install via npx skills (works with curl|bash too)
     echo "     (local not found, installing via npx skills...)"
-    npx skills add zeij-drive/deobf -g -y &>/dev/null
+    npx skills add zeij-drive/deobf -y &>/dev/null
     echo "  ✅ deobf-all installed via npx skills add zeij-drive/deobf"
   fi
 fi
