@@ -63,10 +63,12 @@ echo.
 
 :: === Install deobf-all dispatcher ===
 echo === Installing deobf-all dispatcher ===
-call npx skills add zeij-drive/deobf -g -y
+
+:: deobf-all (root repo) doesn't support -g, install locally first
+call npx skills add zeij-drive/deobf -y
 if errorlevel 1 (
-    echo   ⚠️  Dispatcher install failed, retrying...
-    call npx skills add zeij-drive/deobf -g -y --full-depth
+    echo   ⚠️  Local install failed, retrying with --full-depth...
+    call npx skills add zeij-drive/deobf -y --full-depth
 )
 echo.
 
