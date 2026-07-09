@@ -12,7 +12,7 @@
 
 **Install dispatcher (lightweight):**
 ```bash
-npx skills add zeij-drive/deobf -g -y
+npx skills add zeij-drive/deobf -y
 ```
 
 **Install all 26 sub-skills + dispatcher (single command):**
@@ -105,7 +105,7 @@ This single command:
 ### Method 1: Skills.sh One-Click (Install Dispatcher Only)
 
 ```bash
-npx skills add zeij-drive/deobf -g -y
+npx skills add zeij-drive/deobf -y
 ```
 
 > Installs the `deobf-all` dispatcher via [skills.sh](https://skills.sh/zeij-drive/deobf). On first invocation, it loads sub-skills automatically.

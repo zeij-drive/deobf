@@ -12,7 +12,7 @@
 
 **安装调度器（轻量）：**
 ```bash
-npx skills add zeij-drive/deobf -g -y
+npx skills add zeij-drive/deobf -y
 ```
 
 **安装全部 26 个子 skill + 调度器（一条命令）：**
@@ -107,7 +107,7 @@ curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/
 ### 方式 1：Skills.sh 一键安装（安装调度器）
 
 ```bash
-npx skills add zeij-drive/deobf -g -y
+npx skills add zeij-drive/deobf -y
 ```
 
 > 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 安装 `deobf-all` 调度 skill。首次调用时会自动 `read_skill` 拉起子 skill。
