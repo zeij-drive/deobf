@@ -1,60 +1,34 @@
 #!/usr/bin/env bash
-# ============================================================
-#  deobf-all — Auto-Install Script
-#  Installs all deobfuscation-related agent skills at once.
-#
-#  Usage:
-#    chmod +x install.sh
-#    ./install.sh              # install all skills (global)
-#    ./install.sh --local      # install to current project only
-#    ./install.sh --dry-run    # preview without installing
-#    ./install.sh --force      # reinstall even if already installed
-#    ./install.sh --no-deps    # skip sub-skills, only install dispatcher
-#
-#    # One-liner (no clone needed):
-#    curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
-#
-#  Requirements: Node.js >= 18, npm, npx
-# ============================================================
+# deobf-all auto installer.
+# Default mode is global. Use --local for workspace-only installs.
 
 set -euo pipefail
 
-# ── Config ───────────────────────────────────────────────────
+REMOTE_REPO="zeij-drive/deobf"
+DISPATCHER_SKILL="deobf-all"
+
 SKILLS=(
-  # ── P0: Core deobfuscation ──
   "yaklang/hack-skills:code-obfuscation-deobfuscation"
   "lwjjike/xbsreverseskill:ast-deobfuscation"
-
-  # ── P1: Helper deobfuscation (yaklang ecosystem) ──
   "yaklang/hack-skills:vm-and-bytecode-reverse"
   "yaklang/hack-skills:anti-debugging-techniques"
   "yaklang/hack-skills:symbolic-execution-tools"
-
-  # ── P2: Supplementary ──
   "yaklang/hack-skills:binary-protection-bypass"
   "ljagiello/ctf-skills:ctf-reverse"
   "wshobson/agents:anti-reversing-techniques"
   "cyberkaida/reverse-engineering-assistant:deep-analysis"
-
-  # ── P3: Binary deobfuscation add-ons ──
   "p4nda0s/bin-deobf-skills:deobf-string"
   "p4nda0s/bin-deobf-skills:deobf-indirect"
   "gmh5225/awesome-llvm-security:llvm-obfuscation"
   "gmh5225/awesome-llvm-security:binary-lifting"
-
-  # ── P3: JS / PowerShell deobfuscation ──
   "mukul975/anthropic-cybersecurity-skills:deobfuscating-javascript-malware"
   "mukul975/anthropic-cybersecurity-skills:deobfuscating-powershell-obfuscated-malware"
-
-  # ── P3: Toolchain & binary analysis ──
   "wshobson/agents:binary-analysis-patterns"
   "trailofbits/skills:yara-rule-authoring"
   "trailofbits/skills-curated:ghidra-headless"
   "yfe404/frida-17-skill:frida-17"
   "mukul975/anthropic-cybersecurity-skills:reverse-engineering-malware-with-ghidra"
   "zhaoxuya520/reverse-skill:radare2"
-
-  # ── New: Java / Android deobfuscation ──
   "quarkusio/quarkusdev-skills:java-decompile"
   "brownfinesecurity/iothackbot:jadx"
   "brownfinesecurity/iothackbot:apktool"
@@ -62,167 +36,228 @@ SKILLS=(
   "trailofbits/skills:firebase-apk-scanner"
 )
 
+MODE="global"
 GLOBAL_FLAG="-g"
 DRY_RUN=false
 FORCE=false
 NO_DEPS=false
 
-# ── Args ─────────────────────────────────────────────────────
+usage() {
+  cat <<'EOF'
+Usage: ./install.sh [options]
+
+Options:
+  --global   Install skills globally (default)
+  --local    Install skills to the current workspace only
+  --dry-run  Show what would be installed without installing
+  --force    Reinstall even if a skill directory already exists
+  --no-deps  Install only the deobf-all dispatcher
+  --help     Show this help message
+EOF
+}
+
 for arg in "$@"; do
   case "$arg" in
-    --local)    GLOBAL_FLAG="" ;;
-    --dry-run)  DRY_RUN=true ;;
-    --force)    FORCE=true ;;
-    --no-deps)  NO_DEPS=true ;;
+    --global|-g)
+      MODE="global"
+      GLOBAL_FLAG="-g"
+      ;;
+    --local)
+      MODE="local"
+      GLOBAL_FLAG=""
+      ;;
+    --dry-run)
+      DRY_RUN=true
+      ;;
+    --force)
+      FORCE=true
+      ;;
+    --no-deps)
+      NO_DEPS=true
+      ;;
     --help|-h)
-      echo "Usage: $0 [--local] [--dry-run] [--force] [--no-deps]"
-      echo ""
-      echo "  --local    Install skills to current project instead of globally"
-      echo "  --dry-run  Show what would be installed without installing"
-      echo "  --force    Reinstall even if already installed"
-      echo "  --no-deps  Only install the deobf-all dispatcher, skip sub-skills"
-      echo "  --help     Show this help message"
+      usage
       exit 0
       ;;
     *)
-      echo "Unknown argument: $arg"
+      echo "Unknown argument: $arg" >&2
+      usage >&2
       exit 1
       ;;
   esac
 done
 
-# ── Banner ───────────────────────────────────────────────────
-echo ""
-echo "  ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗ ██████╗"
-echo "  ██╔══██╗██╔════╝██╔════╝██╔═╗██║██╔████╗██║██╔════╝"
-echo "  ██║  ██║█████╗  ██║     ██║██╗██║██╔██║██║██║  ███╗"
-echo "  ██║  ██║██╔══╝  ██║     ██║██████║██║╚██║██║   ██║"
-echo "  ██████╔╝███████╗╚██████╗╚███╔██║██║ ╚████║╚██████╔╝"
-echo "  ╚═════╝ ╚══════╝ ╚═════╝ ╚══╝╚═╝╚═╝  ╚═══╝ ╚═════╝"
-echo ""
-echo "  Deobfuscation Skill Suite — Auto Installer"
-if [ "$GLOBAL_FLAG" = "-g" ]; then
-  echo "  Mode: global"
-else
-  echo "  Mode: local (current project)"
-fi
-echo "  ————————————————————————————————————————————"
-echo ""
-
-# ── Check npx ───────────────────────────────────────────────
-if ! command -v npx &>/dev/null; then
-  echo "  ❌ npx not found. Please install Node.js >= 18 first."
-  echo "     https://nodejs.org/"
-  exit 1
-fi
-
-NODE_VERSION="$(node --version 2>/dev/null || echo 'unknown')"
-echo "  Node.js: $NODE_VERSION"
-echo ""
-
-# ── Determine install dir ────────────────────────────────────
 SCRIPT_DIR=""
-if [ -n "${BASH_SOURCE[0]:-}" ]; then
-  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd 2>/dev/null || true)"
+if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 elif [ -f "$0" ] && [ "${0#-}" = "$0" ]; then
-  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd 2>/dev/null || true)"
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi
 
-if [ -z "$GLOBAL_FLAG" ]; then
-  if [ -n "$SCRIPT_DIR" ]; then
-    SKILL_DIR="${SCRIPT_DIR}/.agents/skills/deobf-all"
-  else
-    echo "  ⚠️  --local requires a local script; falling back to global"
-    GLOBAL_FLAG="-g"
-    SKILL_DIR="${HOME}/.agents/skills/deobf-all"
-  fi
+if [ "$MODE" = "global" ]; then
+  SKILL_ROOT="${HOME}/.agents/skills"
 else
-  SKILL_DIR="${HOME}/.agents/skills/deobf-all"
+  SKILL_ROOT="${PWD}/.agents/skills"
 fi
 
-# ── Install deobf-all dispatcher skill ──────────────────────
-if [ -d "$SKILL_DIR" ] && ! $FORCE; then
-  echo "  ⏩ deobf-all (dispatcher) already installed at $SKILL_DIR — skipping"
-elif $DRY_RUN; then
-  echo "  🔍 [DRY-RUN] Would install: deobf-all dispatcher"
-else
-  echo "  📦 Installing deobf-all (dispatcher)..."
-  mkdir -p "$SKILL_DIR"
-  if [ -f "${SCRIPT_DIR:-.}/deobf-all/SKILL.md" ]; then
-    cp "${SCRIPT_DIR}/deobf-all/SKILL.md" "$SKILL_DIR/SKILL.md"
-    echo "  ✅ deobf-all installed → $SKILL_DIR (local)"
-  else
-    # Fallback: install via npx skills (works with curl|bash too)
-    echo "     (local not found, installing via npx skills...)"
-    npx skills add zeij-drive/deobf -y &>/dev/null
-    echo "  ✅ deobf-all installed via npx skills add zeij-drive/deobf"
-  fi
+DISPATCHER_DIR="${SKILL_ROOT}/${DISPATCHER_SKILL}"
+LOCAL_DISPATCHER=""
+if [ -n "$SCRIPT_DIR" ] && [ -f "${SCRIPT_DIR}/${DISPATCHER_SKILL}/SKILL.md" ]; then
+  LOCAL_DISPATCHER="${SCRIPT_DIR}/${DISPATCHER_SKILL}/SKILL.md"
 fi
+
+echo ""
+echo "deobf-all installer"
+echo "Mode: $MODE"
+echo "Skill root: $SKILL_ROOT"
 echo ""
 
-# ── Install sub-skills ──────────────────────────────────────
-if $NO_DEPS; then
-  echo "  ⏭️  --no-deps: skipping sub-skills installation"
+if ! $DRY_RUN; then
+  if ! command -v npx >/dev/null 2>&1; then
+    echo "npx not found. Please install Node.js >= 18 first." >&2
+    exit 1
+  fi
+
+  NODE_VERSION="$(node --version 2>/dev/null || echo 'unknown')"
+  echo "Node.js: $NODE_VERSION"
   echo ""
-  echo "  🚀 Done! Dispatcher installed. Use /deobf-all to activate."
-  echo ""
-  exit 0
 fi
+
+run_skills_add() {
+  local repo="$1"
+  local skill="$2"
+  local extra_arg="${3:-}"
+  local cmd=(npx skills add "$repo" --skill "$skill")
+
+  if [ -n "$GLOBAL_FLAG" ]; then
+    cmd+=("$GLOBAL_FLAG")
+  fi
+
+  cmd+=(-y)
+
+  if [ -n "$extra_arg" ]; then
+    cmd+=("$extra_arg")
+  fi
+
+  "${cmd[@]}"
+}
+
+copy_dispatcher_from_local() {
+  mkdir -p "$DISPATCHER_DIR"
+  cp "$LOCAL_DISPATCHER" "${DISPATCHER_DIR}/SKILL.md"
+}
+
+install_dispatcher() {
+  if [ -f "${DISPATCHER_DIR}/SKILL.md" ] && ! $FORCE; then
+    echo "[skip] ${DISPATCHER_SKILL} already installed at ${DISPATCHER_DIR}"
+    return 0
+  fi
+
+  if $DRY_RUN; then
+    if [ -n "$LOCAL_DISPATCHER" ]; then
+      echo "[dry-run] install ${DISPATCHER_SKILL} from local repo to ${DISPATCHER_DIR}"
+    else
+      echo "[dry-run] npx skills add ${REMOTE_REPO} --skill ${DISPATCHER_SKILL} ${GLOBAL_FLAG} -y"
+    fi
+    return 0
+  fi
+
+  echo "Installing ${DISPATCHER_SKILL} dispatcher..."
+
+  if [ -n "$LOCAL_DISPATCHER" ]; then
+    if run_skills_add "$SCRIPT_DIR" "$DISPATCHER_SKILL" >/dev/null 2>&1; then
+      echo "[ok] ${DISPATCHER_SKILL} installed via npx from local repo"
+      return 0
+    fi
+
+    echo "[warn] npx local install failed; copying SKILL.md directly"
+    copy_dispatcher_from_local
+    echo "[ok] ${DISPATCHER_SKILL} copied to ${DISPATCHER_DIR}"
+    return 0
+  fi
+
+  if run_skills_add "$REMOTE_REPO" "$DISPATCHER_SKILL" >/dev/null 2>&1; then
+    echo "[ok] ${DISPATCHER_SKILL} installed from ${REMOTE_REPO}"
+    return 0
+  fi
+
+  echo "[warn] dispatcher install failed; retrying with --full-depth"
+  if run_skills_add "$REMOTE_REPO" "$DISPATCHER_SKILL" "--full-depth" >/dev/null 2>&1; then
+    echo "[ok] ${DISPATCHER_SKILL} installed from ${REMOTE_REPO}"
+    return 0
+  fi
+
+  echo "[error] Failed to install ${DISPATCHER_SKILL}" >&2
+  echo "        Try: npx skills add ${REMOTE_REPO} --skill ${DISPATCHER_SKILL} ${GLOBAL_FLAG} -y" >&2
+  return 1
+}
 
 SUCCESS=0
 FAILED=0
 TOTAL=${#SKILLS[@]}
 CURRENT=0
 
-for entry in "${SKILLS[@]}"; do
-  REPO="${entry%%:*}"
-  SKILL="${entry##*:}"
-  CURRENT=$((CURRENT + 1))
+install_subskill() {
+  local entry="$1"
+  local repo="${entry%%:*}"
+  local skill="${entry##*:}"
+  local installed_dir="${SKILL_ROOT}/${skill}"
 
-  # If no colon, entry has no separate skill name → install full repo
-for entry in "${SKILLS[@]}"; do
-  REPO="${entry%%:*}"
-  SKILL="${entry##*:}"
   CURRENT=$((CURRENT + 1))
 
   if $DRY_RUN; then
-    echo "  🔍 [DRY-RUN] [$CURRENT/$TOTAL] npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
+    printf '[dry-run] [%d/%d] npx skills add %s --skill %s %s -y\n' \
+      "$CURRENT" "$TOTAL" "$repo" "$skill" "$GLOBAL_FLAG"
     SUCCESS=$((SUCCESS + 1))
-    continue
+    return 0
   fi
 
-  # Skip if already installed and not --force
-  INSTALLED_DIR="${HOME}/.agents/skills/${SKILL}"
-  if [ -d "$INSTALLED_DIR" ] && ! $FORCE; then
-    echo "  ⏩ [$CURRENT/$TOTAL] $SKILL — already installed, skipping"
+  if [ -d "$installed_dir" ] && ! $FORCE; then
+    printf '[skip] [%d/%d] %s already installed\n' "$CURRENT" "$TOTAL" "$skill"
     SUCCESS=$((SUCCESS + 1))
-    continue
+    return 0
   fi
 
-  printf "  📦 [%d/%d] %-42s → %-32s ... " "$CURRENT" "$TOTAL" "$REPO" "$SKILL"
+  printf '[install] [%d/%d] %-42s -> %-44s ' "$CURRENT" "$TOTAL" "$repo" "$skill"
 
-  if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y &>/dev/null; then
-    echo "✅"
+  if run_skills_add "$repo" "$skill" >/dev/null 2>&1; then
+    echo "ok"
     SUCCESS=$((SUCCESS + 1))
-  else
-    echo "❌ (retrying --full-depth...)"
-    if npx skills add "$REPO" --skill "$SKILL" $GLOBAL_FLAG -y --full-depth &>/dev/null 2>&1; then
-      echo "         ✅ (recovered)"
-      SUCCESS=$((SUCCESS + 1))
-    else
-      echo "         ❌ Failed — run manually: npx skills add $REPO --skill $SKILL $GLOBAL_FLAG -y"
-      FAILED=$((FAILED + 1))
-    fi
+    return 0
   fi
+
+  printf 'retry... '
+  if run_skills_add "$repo" "$skill" "--full-depth" >/dev/null 2>&1; then
+    echo "ok"
+    SUCCESS=$((SUCCESS + 1))
+    return 0
+  fi
+
+  echo "failed"
+  echo "         Try: npx skills add ${repo} --skill ${skill} ${GLOBAL_FLAG} -y" >&2
+  FAILED=$((FAILED + 1))
+  return 0
+}
+
+install_dispatcher
+echo ""
+
+if $NO_DEPS; then
+  echo "--no-deps: skipped sub-skills"
+  echo "Done. Use /deobf-all to activate."
+  exit 0
+fi
+
+echo "Installing ${TOTAL} sub-skills..."
+for entry in "${SKILLS[@]}"; do
+  install_subskill "$entry"
 done
 
-# ── Summary ──────────────────────────────────────────────────
 echo ""
-echo "  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  🎯 Installed: $SUCCESS / $TOTAL sub-skills"
+echo "Installed sub-skills: ${SUCCESS}/${TOTAL}"
 if [ "$FAILED" -gt 0 ]; then
-  echo "  ⚠️  Failed:   $FAILED — see manual commands above"
+  echo "Failed sub-skills: ${FAILED}"
+  exit 1
 fi
-echo ""
-echo "  🚀 All done! Use /deobf-all or run_skill('deobf-all') to activate."
-echo ""
+
+echo "Done. Use /deobf-all or run_skill('deobf-all') to activate."

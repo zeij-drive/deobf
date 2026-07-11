@@ -1,6 +1,6 @@
 # AGENTS.md — deobf-all
 
-AI Agent 统一反混淆技能套件。一个调度 skill 加载 21 个专业反混淆/逆向子 skill，根据目标类型按需加载。
+AI Agent 统一反混淆技能套件。一个调度 skill 加载 26 个专业反混淆/逆向子 skill，根据目标类型按需加载。
 
 ## Project
 

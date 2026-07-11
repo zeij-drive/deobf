@@ -12,7 +12,7 @@
 
 **Install dispatcher (lightweight):**
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 **Install all 26 sub-skills + dispatcher (single command):**
@@ -105,7 +105,7 @@ This single command:
 ### Method 1: Skills.sh One-Click (Install Dispatcher Only)
 
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 > Installs the `deobf-all` dispatcher via [skills.sh](https://skills.sh/zeij-drive/deobf). On first invocation, it loads sub-skills automatically.
@@ -126,7 +126,7 @@ install.bat
 
 The script will:
 - Install all 26 sub-skills globally via `npx skills add`
-- Copy the `deobf-all` dispatcher skill to `~/.agents/skills/`
+- Install the `deobf-all` dispatcher globally via `npx skills add zeij-drive/deobf --skill deobf-all -g -y`
 - Support `--local` and `--dry-run` flags for safer installs
 
 ### Method 3: Manual Install
@@ -167,9 +167,8 @@ npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
 npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
 npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
-# Install deobf-all dispatcher
-mkdir -p ~/.agents/skills/deobf-all
-cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
+# Install deobf-all dispatcher globally
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 ### Method 4: Yaklang Full Install
@@ -300,7 +299,7 @@ Please open an issue or submit a PR.
 
 ## Open Source Notes
 
-This repository is intentionally structured so the dispatcher skill can be reused as a normal Skill package. The reusable entry point is `deobf-all/SKILL.md`, and the install scripts copy it into the local agent skill directory before installing the referenced sub-skills.
+This repository is intentionally structured so the dispatcher skill can be reused as a normal Skill package. The reusable entry point is `deobf-all/SKILL.md`, and the install scripts first register it globally through `npx skills add zeij-drive/deobf --skill deobf-all -g -y`; when a cloned local install cannot be registered through npx, they fall back to copying `SKILL.md` into the agent skill directory.
 
 If you want to publish it as a public skill repository, keep the current `deobf-all/` folder layout and point `install.sh` / `install.bat` at that path. The dispatcher itself is license-compatible with the MIT repository license; the referenced sub-skills keep their upstream licenses.
 
@@ -314,8 +313,11 @@ If you want to publish it as a public skill repository, keep the current `deobf-
 
 ## Flags
 
+- `--global`   Install skills globally (default)
 - `--local`    Install skills to current project instead of globally
 - `--dry-run`  Preview what would be installed without actually installing
+- `--force`    Reinstall skills even when their directories already exist
+- `--no-deps`  Install only the `deobf-all` dispatcher
 - `/deobf-all` Invoke the unified dispatcher skill in your agent
 
 ## 📄 License

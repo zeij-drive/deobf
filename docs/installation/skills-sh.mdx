@@ -13,7 +13,7 @@ icon: zap
 ## 安装
 
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 安装完成后，调度 skill 将被注册到以下位置：
@@ -22,10 +22,10 @@ npx skills add zeij-drive/deobf -y
 
 ## 工作原理
 
-`npx skills add` 执行时：
+`npx skills add zeij-drive/deobf --skill deobf-all -g -y` 执行时：
 
 1. 从 GitHub 仓库 `zeij-drive/deobf` 拉取 `deobf-all/SKILL.md`
-2. 安装到本地 `~/.agents/skills/deobf-all/` 目录
+2. 安装到全局 `~/.agents/skills/deobf-all/` 目录
 3. 自动扫描并注册到已安装的 agent 平台
 
 首次调用 `/deobf-all` 时，调度器会先对目标分类，再按需加载相关子 skill。

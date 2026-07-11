@@ -1,440 +1,262 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal EnableExtensions EnableDelayedExpansion
 
-:: ── Save original code page and switch to UTF-8 for Unicode banner ──
-for /f "tokens=2 delims=:" %%a in ('chcp') do set "_OCP=%%a"
-set "_OCP=!_OCP: =!"
-chcp 65001 >nul
+rem deobf-all auto installer for Windows.
+rem Default mode is global. Use --local for workspace-only installs.
 
-:: ============================================================
-::  deobf-all — Auto-Install Script (Windows)
-::  Installs all deobfuscation-related agent skills at once.
-::  Flat sequential npx skills add — no subroutines, no goto.
-::
-::  Usage:
-::    install.bat              # install all skills (global)
-::    install.bat --local      # install to current project only
-::    install.bat --dry-run    # preview without installing
-::    install.bat --force      # reinstall even if already installed
-::    install.bat --no-deps    # skip sub-skills, only install dispatcher
-::    install.bat --help       # show this help message
-::
-::  One-liner (no clone needed, PowerShell — handles MOTW):
-::    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
-::
-::  One-liner (no clone needed, curl — Windows 10+):
-::    curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
-::
-::  Requirements: Node.js >= 18, npm, npx
-:: ============================================================
+set "REMOTE_REPO=zeij-drive/deobf"
+set "DISPATCHER_SKILL=deobf-all"
+set "MODE=global"
+set "GLOBAL_FLAG=-g"
+set "DRY_RUN=0"
+set "FORCE=0"
+set "NO_DEPS=0"
+set "TOTAL=26"
+set "CURRENT=0"
+set "SUCCESS=0"
+set "FAILED=0"
+set "SCRIPT_DIR=%~dp0"
 
-:: -- Self-remove Mark-of-the-Web (MOTW) --
-:: If downloaded from internet, Unblock-File removes the Zone.Identifier ADS.
-if exist "%~f0:Zone.Identifier" (
-    powershell -c "Unblock-File '%~f0'" 2>nul
+:parse_args
+if "%~1"=="" goto args_done
+if /I "%~1"=="--global" (
+    set "MODE=global"
+    set "GLOBAL_FLAG=-g"
+    shift
+    goto parse_args
+)
+if /I "%~1"=="-g" (
+    set "MODE=global"
+    set "GLOBAL_FLAG=-g"
+    shift
+    goto parse_args
+)
+if /I "%~1"=="--local" (
+    set "MODE=local"
+    set "GLOBAL_FLAG="
+    shift
+    goto parse_args
+)
+if /I "%~1"=="--dry-run" (
+    set "DRY_RUN=1"
+    shift
+    goto parse_args
+)
+if /I "%~1"=="--force" (
+    set "FORCE=1"
+    shift
+    goto parse_args
+)
+if /I "%~1"=="--no-deps" (
+    set "NO_DEPS=1"
+    shift
+    goto parse_args
+)
+if /I "%~1"=="--help" (
+    call :Usage
+    exit /b 0
+)
+if /I "%~1"=="-h" (
+    call :Usage
+    exit /b 0
 )
 
-:: Check npx
-where npx >nul 2>&1
-if %ERRORLEVEL% neq 0 (
-    echo X npx not found. Please install Node.js ^>= 18 first.
-    echo   https://nodejs.org/
-    pause
+echo Unknown argument: %~1
+call :Usage
+exit /b 1
+
+:args_done
+if /I "%MODE%"=="global" (
+    set "SKILL_ROOT=%USERPROFILE%\.agents\skills"
+) else (
+    set "SKILL_ROOT=%CD%\.agents\skills"
+)
+
+echo.
+echo deobf-all installer
+echo Mode: %MODE%
+echo Skill root: %SKILL_ROOT%
+echo.
+
+if not "%DRY_RUN%"=="1" (
+    where npx >nul 2>&1
+    if errorlevel 1 (
+        echo npx not found. Please install Node.js ^>= 18 first.
+        exit /b 1
+    )
+
+    for /f "tokens=*" %%v in ('node --version 2^>nul') do set "NODE_VER=%%v"
+    echo Node.js: !NODE_VER!
+    echo.
+)
+
+call :InstallDispatcher
+if errorlevel 1 exit /b 1
+echo.
+
+if "%NO_DEPS%"=="1" (
+    echo --no-deps: skipped sub-skills
+    echo Done. Use /deobf-all to activate.
+    exit /b 0
+)
+
+echo Installing %TOTAL% sub-skills...
+for %%E in (
+    yaklang/hack-skills:code-obfuscation-deobfuscation
+    lwjjike/xbsreverseskill:ast-deobfuscation
+    yaklang/hack-skills:vm-and-bytecode-reverse
+    yaklang/hack-skills:anti-debugging-techniques
+    yaklang/hack-skills:symbolic-execution-tools
+    yaklang/hack-skills:binary-protection-bypass
+    ljagiello/ctf-skills:ctf-reverse
+    wshobson/agents:anti-reversing-techniques
+    cyberkaida/reverse-engineering-assistant:deep-analysis
+    p4nda0s/bin-deobf-skills:deobf-string
+    p4nda0s/bin-deobf-skills:deobf-indirect
+    gmh5225/awesome-llvm-security:llvm-obfuscation
+    gmh5225/awesome-llvm-security:binary-lifting
+    mukul975/anthropic-cybersecurity-skills:deobfuscating-javascript-malware
+    mukul975/anthropic-cybersecurity-skills:deobfuscating-powershell-obfuscated-malware
+    wshobson/agents:binary-analysis-patterns
+    trailofbits/skills:yara-rule-authoring
+    trailofbits/skills-curated:ghidra-headless
+    yfe404/frida-17-skill:frida-17
+    mukul975/anthropic-cybersecurity-skills:reverse-engineering-malware-with-ghidra
+    zhaoxuya520/reverse-skill:radare2
+    quarkusio/quarkusdev-skills:java-decompile
+    brownfinesecurity/iothackbot:jadx
+    brownfinesecurity/iothackbot:apktool
+    mukul975/anthropic-cybersecurity-skills:reverse-engineering-android-malware-with-jadx
+    trailofbits/skills:firebase-apk-scanner
+) do call :InstallSubskill "%%E"
+
+echo.
+echo Installed sub-skills: !SUCCESS!/%TOTAL%
+if !FAILED! gtr 0 (
+    echo Failed sub-skills: !FAILED!
     exit /b 1
 )
 
-:: Show Node version
-for /f "tokens=*" %%v in ('node --version 2^>nul') do set "NODE_VER=%%v"
-echo Node.js: %NODE_VER%
+echo Done. Use /deobf-all or run_skill('deobf-all') to activate.
+exit /b 0
+
+:Usage
+echo Usage: install.bat [options]
 echo.
+echo Options:
+echo   --global   Install skills globally (default)
+echo   --local    Install skills to the current workspace only
+echo   --dry-run  Show what would be installed without installing
+echo   --force    Reinstall even if a skill directory already exists
+echo   --no-deps  Install only the deobf-all dispatcher
+echo   --help     Show this help message
+exit /b 0
 
-:: ── Banner ──
-echo.
-echo   ██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗ ██████╗
-echo   ██╔══██╗██╔════╝██╔════╝██╔═╗██║██╔████╗██║██╔════╝
-echo   ██║  ██║█████╗  ██║     ██║██╗██║██╔██║██║██║  ███╗
-echo   ██║  ██║██╔══╝  ██║     ██║██████║██║╚██║██║   ██║
-echo   ██████╔╝███████╗╚██████╗╚███╔██║██║ ╚████║╚██████╔╝
-echo   ╚═════╝ ╚══════╝ ╚═════╝ ╚══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
-echo.
-echo   Deobfuscation Skill Suite — Auto Installer
-echo   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-echo.
+:RunSkillsAdd
+set "RSA_REPO=%~1"
+set "RSA_SKILL=%~2"
+set "RSA_EXTRA=%~3"
 
-:: === Install deobf-all dispatcher ===
-echo === Installing deobf-all dispatcher ===
-
-:: deobf-all (root repo) doesn't support -g, install locally first
-call npx skills add zeij-drive/deobf -y
-if errorlevel 1 (
-    echo   ⚠️  Local install failed, retrying with --full-depth...
-    call npx skills add zeij-drive/deobf -y --full-depth
-)
-echo.
-
-:: === Install all 26 sub-skills with progress ===
-echo === Installing 26 sub-skills ===
-echo.
-
-set SUCCESS=0
-set FAILED=0
-set TOTAL=26
-set CURRENT=0
-
-:: ── P0: Core deobfuscation ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] code-obfuscation-deobfuscation ........ "
-if exist "%USERPROFILE%\.agents\skills\code-obfuscation-deobfuscation" (
-    echo ⏭️ & set /a SUCCESS+=1
+if defined RSA_EXTRA (
+    call npx skills add "%RSA_REPO%" --skill "%RSA_SKILL%" %GLOBAL_FLAG% -y %RSA_EXTRA% >nul 2>&1
 ) else (
-    call npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yaklang/hack-skills --skill code-obfuscation-deobfuscation -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+    call npx skills add "%RSA_REPO%" --skill "%RSA_SKILL%" %GLOBAL_FLAG% -y >nul 2>&1
+)
+exit /b %ERRORLEVEL%
+
+:InstallDispatcher
+set "DISPATCHER_DIR=%SKILL_ROOT%\%DISPATCHER_SKILL%"
+set "LOCAL_DISPATCHER=%SCRIPT_DIR%%DISPATCHER_SKILL%\SKILL.md"
+
+if exist "%DISPATCHER_DIR%\SKILL.md" if not "%FORCE%"=="1" (
+    echo [skip] %DISPATCHER_SKILL% already installed at %DISPATCHER_DIR%
+    exit /b 0
 )
 
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] ast-deobfuscation .................... "
-if exist "%USERPROFILE%\.agents\skills\ast-deobfuscation" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add lwjjike/xbsreverseskill --skill ast-deobfuscation -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+if "%DRY_RUN%"=="1" (
+    if exist "%LOCAL_DISPATCHER%" (
+        echo [dry-run] install %DISPATCHER_SKILL% from local repo to %DISPATCHER_DIR%
+    ) else (
+        echo [dry-run] npx skills add %REMOTE_REPO% --skill %DISPATCHER_SKILL% %GLOBAL_FLAG% -y
+    )
+    exit /b 0
 )
 
-:: ── P1: Helper deobfuscation (yaklang ecosystem) ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] vm-and-bytecode-reverse ............. "
-if exist "%USERPROFILE%\.agents\skills\vm-and-bytecode-reverse" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y >nul
+echo Installing %DISPATCHER_SKILL% dispatcher...
+
+if exist "%LOCAL_DISPATCHER%" (
+    call :RunSkillsAdd "%SCRIPT_DIR%" "%DISPATCHER_SKILL%" ""
+    if not errorlevel 1 (
+        echo [ok] %DISPATCHER_SKILL% installed via npx from local repo
+        exit /b 0
+    )
+
+    echo [warn] npx local install failed; copying SKILL.md directly
+    if not exist "%DISPATCHER_DIR%" mkdir "%DISPATCHER_DIR%" >nul 2>&1
+    copy /Y "%LOCAL_DISPATCHER%" "%DISPATCHER_DIR%\SKILL.md" >nul
     if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yaklang/hack-skills --skill vm-and-bytecode-reverse -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+        echo [error] Failed to copy %LOCAL_DISPATCHER% to %DISPATCHER_DIR%
+        exit /b 1
+    )
+    echo [ok] %DISPATCHER_SKILL% copied to %DISPATCHER_DIR%
+    exit /b 0
 )
 
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] anti-debugging-techniques .......... "
-if exist "%USERPROFILE%\.agents\skills\anti-debugging-techniques" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yaklang/hack-skills --skill anti-debugging-techniques -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+call :RunSkillsAdd "%REMOTE_REPO%" "%DISPATCHER_SKILL%" ""
+if not errorlevel 1 (
+    echo [ok] %DISPATCHER_SKILL% installed from %REMOTE_REPO%
+    exit /b 0
+)
+
+echo [warn] dispatcher install failed; retrying with --full-depth
+call :RunSkillsAdd "%REMOTE_REPO%" "%DISPATCHER_SKILL%" "--full-depth"
+if not errorlevel 1 (
+    echo [ok] %DISPATCHER_SKILL% installed from %REMOTE_REPO%
+    exit /b 0
+)
+
+echo [error] Failed to install %DISPATCHER_SKILL%
+echo         Try: npx skills add %REMOTE_REPO% --skill %DISPATCHER_SKILL% %GLOBAL_FLAG% -y
+exit /b 1
+
+:InstallSubskill
+set "ENTRY=%~1"
+for /f "tokens=1,2 delims=:" %%A in ("!ENTRY!") do (
+    set "REPO=%%A"
+    set "SKILL=%%B"
 )
 
 set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] symbolic-execution-tools ........... "
-if exist "%USERPROFILE%\.agents\skills\symbolic-execution-tools" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add yaklang/hack-skills --skill symbolic-execution-tools -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yaklang/hack-skills --skill symbolic-execution-tools -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+
+if "%DRY_RUN%"=="1" (
+    echo [dry-run] [!CURRENT!/%TOTAL%] npx skills add !REPO! --skill !SKILL! %GLOBAL_FLAG% -y
+    set /a SUCCESS+=1
+    exit /b 0
 )
 
-:: ── P2: Supplementary ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] binary-protection-bypass .......... "
-if exist "%USERPROFILE%\.agents\skills\binary-protection-bypass" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yaklang/hack-skills --skill binary-protection-bypass -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+if exist "%SKILL_ROOT%\!SKILL!" if not "%FORCE%"=="1" (
+    echo [skip] [!CURRENT!/%TOTAL%] !SKILL! already installed
+    set /a SUCCESS+=1
+    exit /b 0
 )
 
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] ctf-reverse ....................... "
-if exist "%USERPROFILE%\.agents\skills\ctf-reverse" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add ljagiello/ctf-skills --skill ctf-reverse -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+<nul set /p=" [install] [!CURRENT!/%TOTAL%] !REPO! -^> !SKILL! "
+call :RunSkillsAdd "!REPO!" "!SKILL!" ""
+if not errorlevel 1 (
+    echo ok
+    set /a SUCCESS+=1
+    exit /b 0
 )
 
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] anti-reversing-techniques ......... "
-if exist "%USERPROFILE%\.agents\skills\anti-reversing-techniques" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add wshobson/agents --skill anti-reversing-techniques -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add wshobson/agents --skill anti-reversing-techniques -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
+<nul set /p="retry... "
+call :RunSkillsAdd "!REPO!" "!SKILL!" "--full-depth"
+if not errorlevel 1 (
+    echo ok
+    set /a SUCCESS+=1
+    exit /b 0
 )
 
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] deep-analysis ..................... "
-if exist "%USERPROFILE%\.agents\skills\deep-analysis" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add cyberkaida/reverse-engineering-assistant --skill deep-analysis -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-:: ── P3: Binary deobfuscation add-ons ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] deobf-string ...................... "
-if exist "%USERPROFILE%\.agents\skills\deobf-string" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add p4nda0s/bin-deobf-skills --skill deobf-string -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add p4nda0s/bin-deobf-skills --skill deobf-string -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] deobf-indirect .................... "
-if exist "%USERPROFILE%\.agents\skills\deobf-indirect" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add p4nda0s/bin-deobf-skills --skill deobf-indirect -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add p4nda0s/bin-deobf-skills --skill deobf-indirect -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] llvm-obfuscation .................. "
-if exist "%USERPROFILE%\.agents\skills\llvm-obfuscation" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add gmh5225/awesome-llvm-security --skill llvm-obfuscation -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add gmh5225/awesome-llvm-security --skill llvm-obfuscation -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] binary-lifting .................... "
-if exist "%USERPROFILE%\.agents\skills\binary-lifting" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add gmh5225/awesome-llvm-security --skill binary-lifting -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add gmh5225/awesome-llvm-security --skill binary-lifting -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-:: ── P3: JS / PowerShell deobfuscation ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] deobfuscating-javascript-malware .. "
-if exist "%USERPROFILE%\.agents\skills\deobfuscating-javascript-malware" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-javascript-malware -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-javascript-malware -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] deobfuscating-powershell-obfuscated-malware "
-if exist "%USERPROFILE%\.agents\skills\deobfuscating-powershell-obfuscated-malware" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-powershell-obfuscated-malware -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill deobfuscating-powershell-obfuscated-malware -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-:: ── P3: Toolchain & binary analysis ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] binary-analysis-patterns ........... "
-if exist "%USERPROFILE%\.agents\skills\binary-analysis-patterns" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add wshobson/agents --skill binary-analysis-patterns -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add wshobson/agents --skill binary-analysis-patterns -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] yara-rule-authoring ............... "
-if exist "%USERPROFILE%\.agents\skills\yara-rule-authoring" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add trailofbits/skills --skill yara-rule-authoring -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add trailofbits/skills --skill yara-rule-authoring -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] ghidra-headless ................... "
-if exist "%USERPROFILE%\.agents\skills\ghidra-headless" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add trailofbits/skills-curated --skill ghidra-headless -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] frida-17 .......................... "
-if exist "%USERPROFILE%\.agents\skills\frida-17" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add yfe404/frida-17-skill --skill frida-17 -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add yfe404/frida-17-skill --skill frida-17 -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] reverse-engineering-malware-with-ghidra "
-if exist "%USERPROFILE%\.agents\skills\reverse-engineering-malware-with-ghidra" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-malware-with-ghidra -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] radare2 ........................... "
-if exist "%USERPROFILE%\.agents\skills\radare2" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add zhaoxuya520/reverse-skill --skill radare2 -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-:: ── P3: Java / Android deobfuscation ──
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] java-decompile .................... "
-if exist "%USERPROFILE%\.agents\skills\java-decompile" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add quarkusio/quarkusdev-skills --skill java-decompile -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] jadx .............................. "
-if exist "%USERPROFILE%\.agents\skills\jadx" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add brownfinesecurity/iothackbot --skill jadx -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add brownfinesecurity/iothackbot --skill jadx -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] apktool ........................... "
-if exist "%USERPROFILE%\.agents\skills\apktool" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add brownfinesecurity/iothackbot --skill apktool -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add brownfinesecurity/iothackbot --skill apktool -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] reverse-engineering-android-malware-with-jadx "
-if exist "%USERPROFILE%\.agents\skills\reverse-engineering-android-malware-with-jadx" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-set /a CURRENT+=1
-<nul set /p="  [!CURRENT!/%TOTAL%] firebase-apk-scanner .............. "
-if exist "%USERPROFILE%\.agents\skills\firebase-apk-scanner" (
-    echo ⏭️ & set /a SUCCESS+=1
-) else (
-    call npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y >nul
-    if errorlevel 1 (
-    <nul set /p="⚡ retry..."
-    call npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y >nul
-    if errorlevel 1 (echo ❌ & set /a FAILED+=1) else (echo ✅ & set /a SUCCESS+=1)
-) else (echo ✅ & set /a SUCCESS+=1)
-)
-
-:: ── Summary ──
-echo.
-echo ============================================
-echo   🎯 Installed: !SUCCESS! / %TOTAL% sub-skills
-if !FAILED! gtr 0 echo   ⚠️  Failed:   !FAILED! — see errors above
-echo.
-echo   🚀 All done! Use /deobf-all to activate.
-echo ============================================
-echo.
-
-:: ── Restore original code page ──
-chcp %_OCP% >nul
+echo failed
+echo          Try: npx skills add !REPO! --skill !SKILL! %GLOBAL_FLAG% -y
+set /a FAILED+=1
+exit /b 0

@@ -29,7 +29,7 @@ icon: rocket
 ## 方式 1：Skills.sh 一键安装（安装调度器）
 
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 > 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 安装 `deobf-all` 调度 skill。首次调用时会自动拉起子 skill。
@@ -63,8 +63,8 @@ cd deobf
 
 安装脚本将自动完成：
 - 通过 `npx skills add` 全局安装全部 **26 个子 skill**
-- 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
-- 如果在当前 workspace 中运行，也会安装到本地 skill 路径
+- 通过 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局安装 `deobf-all` 调度 skill
+- 使用 `--local` 时安装到当前 workspace 的 `.agents/skills/` 路径
 
 **开始使用**
 
@@ -87,6 +87,7 @@ cd deobf
 
 | 参数 | 说明 |
 |------|------|
+| `--global` | 全局安装技能（默认） |
 | `--local` | 将技能安装到当前 workspace，不影响全局目录 |
 | `--dry-run` | 只预览将要安装的技能，不真正执行安装 |
 | `--force` | 强制重新安装已存在的 skill |

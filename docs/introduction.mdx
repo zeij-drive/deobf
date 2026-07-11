@@ -6,7 +6,7 @@ icon: shield-check
 
 # deobf-all 简介
 
-**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一调度入口。一条命令 `npx skills add zeij-drive/deobf -y` 即可安装，调用 `/deobf-all` 后它会**先分类、再按需加载**相关子 skill，避免一次性拉起全部 14 个子 skill 浪费上下文。
+**deobf-all** 是一个 Agent Skill，充当反混淆工作流的统一调度入口。一条命令 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 即可全局安装，调用 `/deobf-all` 后它会**先分类、再按需加载**相关子 skill，避免一次性拉起全部 26 个子 skill 浪费上下文。
 
 <Steps>
   **分类（Triage）**
@@ -30,7 +30,7 @@ icon: shield-check
 
 <CardGroup cols={2}>
   <Card title="统一入口" icon="bolt">
-    不必记住每个 skill 的名称。一条命令 `npx skills add zeij-drive/deobf -y` 安装，一个命令 `/deobf-all` 调用，自动完成全部调度。
+    不必记住每个 skill 的名称。一条命令 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局安装，一个命令 `/deobf-all` 调用，自动完成全部调度。
   </Card>
   <Card title="按需加载" icon="route">
     先分类再加载，仅加载目标相关的子 skill，节省上下文空间和工具调用次数。每次调用不超过 5 次 `read_skill`。

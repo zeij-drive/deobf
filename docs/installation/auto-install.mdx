@@ -29,7 +29,7 @@ icon: download
 脚本将按以下顺序执行：
 
 1. **检查 npx** — 确认 Node.js 环境可用
-2. **安装调度器** — 将 `deobf-all/SKILL.md` 复制到 `~/.agents/skills/deobf-all/`
+2. **安装调度器** — 优先通过 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局注册 `deobf-all`
 3. **安装子 skill** — 逐个通过 `npx skills add` 安装 26 个子 skill（P0/P1/P2/P3）
 4. **输出摘要** — 显示安装成功/失败数量
 
@@ -41,9 +41,12 @@ icon: download
 
 | 选项 | 说明 |
 |------|------|
-| （无参数） | 全局安装全部skills |
+| （无参数） | 全局安装全部 skills |
+| `--global` | 全局安装全部 skills（默认） |
 | `--local` | 安装到当前项目目录，不写入全局 skill 目录 |
 | `--dry-run` | 仅展示将要执行的安装命令，不实际安装 |
+| `--force` | 强制重新安装已存在的 skill |
+| `--no-deps` | 仅安装调度器，跳过子 skill |
 | `--help` / `-h` | 显示帮助信息 |
 
 ### `--local` 模式

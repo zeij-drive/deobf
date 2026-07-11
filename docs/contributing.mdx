@@ -30,7 +30,7 @@ description: 如何为 deobf-all 贡献代码和改进
 本仓库刻意设计为调度 skill 可作为普通的 Skill 包复用：
 
 - 可复用的入口点是 `deobf-all/SKILL.md`
-- 安装脚本在安装引用的子 skill 之前会先将其复制到本地 agent skill 目录
+- 安装脚本会优先通过 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局注册调度器，`--local` 模式则安装到当前 workspace
 - 如果你想将其发布为公开的 skill 仓库，保持当前的 `deobf-all/` 文件夹结构
 - 调度器本身与仓库的 MIT 许可证兼容
 - 引用的子 skill 保留各自上游的许可证

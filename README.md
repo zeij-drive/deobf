@@ -12,7 +12,7 @@
 
 **安装调度器（轻量）：**
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 **安装全部 26 个子 skill + 调度器（一条命令）：**
@@ -107,7 +107,7 @@ curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/
 ### 方式 1：Skills.sh 一键安装（安装调度器）
 
 ```bash
-npx skills add zeij-drive/deobf -y
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 > 通过 [skills.sh](https://skills.sh/zeij-drive/deobf) 安装 `deobf-all` 调度 skill。首次调用时会自动 `read_skill` 拉起子 skill。
@@ -129,8 +129,8 @@ install.bat
 
 脚本将完成：
 - 通过 `npx skills add` 全局安装全部 26 个子 skill
-- 将 `deobf-all` 调度 skill 复制到 `~/.agents/skills/`
-- 如果在当前 workspace 中运行，也会安装到本地 Reasonix skill 路径
+- 通过 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局安装 `deobf-all` 调度 skill
+- 使用 `--local` 时安装到当前 workspace 的 `.agents/skills/` 路径
 - 提供 `--local` 和 `--dry-run` 参数，方便更安全的安装
 
 ### 方式 3：手动安装
@@ -171,9 +171,8 @@ npx skills add brownfinesecurity/iothackbot --skill apktool -g -y
 npx skills add mukul975/anthropic-cybersecurity-skills --skill reverse-engineering-android-malware-with-jadx -g -y
 npx skills add trailofbits/skills --skill firebase-apk-scanner -g -y
 
-# 安装 deobf-all 调度 skill
-mkdir -p ~/.agents/skills/deobf-all
-cp deobf-all/SKILL.md ~/.agents/skills/deobf-all/SKILL.md
+# 全局安装 deobf-all 调度 skill
+npx skills add zeij-drive/deobf --skill deobf-all -g -y
 ```
 
 ### 方式 4：一键安装完整 Yaklang
@@ -304,7 +303,7 @@ deobf-all (调度器)
 
 ## 开源说明
 
-本仓库特意设计为调度 skill 可作为普通的 Skill 包复用。可复用的入口点是 `deobf-all/SKILL.md`，安装脚本在安装引用的子 skill 之前会先将其复制到本地 agent skill 目录。
+本仓库特意设计为调度 skill 可作为普通的 Skill 包复用。可复用的入口点是 `deobf-all/SKILL.md`，安装脚本会优先通过 `npx skills add zeij-drive/deobf --skill deobf-all -g -y` 全局注册调度器；克隆仓库安装且本地注册失败时，才回退复制 `SKILL.md` 到 agent skill 目录。
 
 如果你想将其发布为公开的 skill 仓库，保持当前的 `deobf-all/` 文件夹结构，并将 `install.sh` / `install.bat` 指向该路径即可。调度器本身与仓库的 MIT 许可证兼容；引用的子 skill 保留各自上游的许可证。
 
@@ -318,8 +317,11 @@ deobf-all (调度器)
 
 ## 选项说明
 
+- `--global`：全局安装技能（默认）。
 - `--local`：把技能安装到当前 workspace，不影响全局目录。
 - `--dry-run`：只预览将要安装的 skills，不真正执行安装。
+- `--force`：强制重新安装已存在的 skill。
+- `--no-deps`：仅安装 `deobf-all` 调度器，跳过子 skill。
 - `/deobf-all`：在支持的 agent 中直接调用统一调度 skill。
 
 ## 📄 许可证
