@@ -17,19 +17,19 @@ npx skills add zeij-drive/deobf --skill deobf-all -g -y
 
 **安装全部 26 个子 skill + 调度器（一条命令）：**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
 ```
 
 **Windows 一键安装：**
 
 PowerShell（推荐 — 自动处理 MOTW 安全标记）：
 ```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+$ErrorActionPreference = "Stop"; $url = "https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat"; $dst = Join-Path $env:TEMP "deobf.bat"; try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing $url -OutFile $dst } catch { curl.exe --ssl-no-revoke -fL --retry 3 -o $dst $url; if ($LASTEXITCODE -ne 0) { throw "Download failed (curl exit code $LASTEXITCODE)" } }; Unblock-File -LiteralPath $dst; cmd /c $dst
 ```
 
-curl（Windows 10+ 自带，无需 PowerShell）：
-```bash
-curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
+curl.exe（Windows 10+ 自带，CMD 中使用）：
+```bat
+curl.exe --ssl-no-revoke -fL --retry 3 -o "%TEMP%\deobf.bat" https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat && "%TEMP%\deobf.bat"
 ```
 
 > 安装后首次调用 `/deobf-all` 时会自动按需加载子 skill。如需**完整预装全部 26 个子 skill**，上面的一键命令（PowerShell）即可全量安装，无需克隆仓库。
@@ -84,19 +84,19 @@ curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/
 
 **macOS / Linux：**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
 ```
 
 **Windows：**
 
 PowerShell（推荐 — 自动处理 MOTW 安全标记）：
 ```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+$ErrorActionPreference = "Stop"; $url = "https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat"; $dst = Join-Path $env:TEMP "deobf.bat"; try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing $url -OutFile $dst } catch { curl.exe --ssl-no-revoke -fL --retry 3 -o $dst $url; if ($LASTEXITCODE -ne 0) { throw "Download failed (curl exit code $LASTEXITCODE)" } }; Unblock-File -LiteralPath $dst; cmd /c $dst
 ```
 
-curl（Windows 10+ 自带）：
-```bash
-curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
+curl.exe（Windows 10+ 自带，CMD 中使用）：
+```bat
+curl.exe --ssl-no-revoke -fL --retry 3 -o "%TEMP%\deobf.bat" https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat && "%TEMP%\deobf.bat"
 ```
 
 这一条命令即可完成：

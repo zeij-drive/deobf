@@ -14,7 +14,7 @@ AI Agent 统一反混淆技能套件。一个调度 skill 加载 26 个专业反
 
 ```bash
 # 一键全量安装（推荐）
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
 
 # 安装（全局，macOS/Linux）
 chmod +x install.sh && ./install.sh

@@ -17,17 +17,17 @@ npx skills add zeij-drive/deobf --skill deobf-all -g -y
 
 **Install all 26 sub-skills + dispatcher (single command):**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
 ```
 
 **Windows one-click (PowerShell — handles MOTW):**
 ```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+$ErrorActionPreference = "Stop"; $url = "https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat"; $dst = Join-Path $env:TEMP "deobf.bat"; try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing $url -OutFile $dst } catch { curl.exe --ssl-no-revoke -fL --retry 3 -o $dst $url; if ($LASTEXITCODE -ne 0) { throw "Download failed (curl exit code $LASTEXITCODE)" } }; Unblock-File -LiteralPath $dst; cmd /c $dst
 ```
 
-**or (curl — Windows 10+):**
-```bash
-curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
+**or (curl.exe — Windows 10+, from CMD):**
+```bat
+curl.exe --ssl-no-revoke -fL --retry 3 -o "%TEMP%\deobf.bat" https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat && "%TEMP%\deobf.bat"
 ```
 
 > No clone needed. Automatically installs all sub-skills and dispatcher.
@@ -82,19 +82,19 @@ Install **all 26 sub-skills + deobf-all dispatcher** without cloning:
 
 **macOS / Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
 ```
 
 **Windows:**
 
 PowerShell (recommended — handles MOTW):
 ```powershell
-powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+$ErrorActionPreference = "Stop"; $url = "https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat"; $dst = Join-Path $env:TEMP "deobf.bat"; try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing $url -OutFile $dst } catch { curl.exe --ssl-no-revoke -fL --retry 3 -o $dst $url; if ($LASTEXITCODE -ne 0) { throw "Download failed (curl exit code $LASTEXITCODE)" } }; Unblock-File -LiteralPath $dst; cmd /c $dst
 ```
 
-curl (Windows 10+):
-```bash
-curl -fsSLo %temp%\deobf.bat https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat && "%temp%\deobf.bat"
+curl.exe (Windows 10+, from CMD):
+```bat
+curl.exe --ssl-no-revoke -fL --retry 3 -o "%TEMP%\deobf.bat" https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat && "%TEMP%\deobf.bat"
 ```
 
 This single command:

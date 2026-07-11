@@ -13,12 +13,12 @@ icon: rocket
 <Tabs>
   <Tab title="macOS / Linux">
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/zeij-drive/deobf/master/install.sh | bash
     ```
   </Tab>
   <Tab title="Windows (PowerShell)">
     ```powershell
-    powershell -c "iwr -useb https://raw.githubusercontent.com/zeij-drive/deobf/main/install.bat -outf $env:TEMP\deobf.bat; Unblock-File $env:TEMP\deobf.bat; cmd /c $env:TEMP\deobf.bat"
+    $ErrorActionPreference = "Stop"; $url = "https://raw.githubusercontent.com/zeij-drive/deobf/master/install.bat"; $dst = Join-Path $env:TEMP "deobf.bat"; try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing $url -OutFile $dst } catch { curl.exe --ssl-no-revoke -fL --retry 3 -o $dst $url; if ($LASTEXITCODE -ne 0) { throw "Download failed (curl exit code $LASTEXITCODE)" } }; Unblock-File -LiteralPath $dst; cmd /c $dst
     ```
   </Tab>
 </Tabs>
