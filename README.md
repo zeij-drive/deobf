@@ -1,5 +1,5 @@
 > [!TIP]
-> **没有低价便宜的大模型？我们推荐这个中转站：[https://api.openzen.cyou](https://api.openzen.cyou)** —— GPT 0.06倍率, 5.6 sol甚至只比5.5贵一点，lunar比5.5，5.4还便宜，Grok直接干到0.03 Claude 0.1。
+> **没有低价便宜的大模型？我们推荐这个中转站：[https://api.openzen.cyou](https://api.openzen.cyou)** —— GPT 0.02倍率, 5.6 sol甚至只比5.5贵一点，lunar比5.5，5.4还便宜，Grok直接干到0.03 Claude 0.1，gpt-image-2仅需0.09/次。
 
 ---
 
