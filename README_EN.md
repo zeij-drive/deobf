@@ -1,3 +1,8 @@
+> [!TIP]
+> **没有低价便宜的大模型？我们推荐这个中转站：[https://api.openzen.cyou](https://api.openzen.cyou)** —— GPT 0.06倍率, 5.6 sol甚至只比5.5贵一点，lunar比5.5，5.4还便宜，Grok直接干到0.03 Claude 0.1。
+
+---
+
 [![EN](https://img.shields.io/badge/lang-EN-blue)](README_EN.md) [![中文](https://img.shields.io/badge/lang-中文-red)](README.md)
 
 # 🛡️ deobf-all — Unified Deobfuscation Skill Suite for AI Agents
@@ -343,3 +348,4 @@ The sub-skills referenced by this dispatcher are maintained by their respective 
 ## ⚠️ Disclaimer
 
 This skill suite is intended for **authorized security research, CTF competitions, and educational purposes** only. Always ensure you have proper authorization before analyzing or deobfuscating any software. The authors and contributors are not responsible for misuse.
+

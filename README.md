@@ -1,3 +1,8 @@
+> [!TIP]
+> **没有低价便宜的大模型？我们推荐这个中转站：[https://api.openzen.cyou](https://api.openzen.cyou)** —— GPT 0.06倍率, 5.6 sol甚至只比5.5贵一点，lunar比5.5，5.4还便宜，Grok直接干到0.03 Claude 0.1。
+
+---
+
 [![EN](https://img.shields.io/badge/lang-EN-blue)](README_EN.md) [![中文](https://img.shields.io/badge/lang-中文-red)](README.md)
 
 # 🛡️ deobf-all — AI Agent 统一反混淆技能套件
@@ -347,3 +352,4 @@ MIT 许可证 — 详见 [LICENSE](LICENSE)。
 ## ⚠️ 免责声明
 
 本 skill 套件仅限 **授权的安全研究、CTF 竞赛和教育目的** 使用。请始终确保在分析或反混淆任何软件前获得了适当授权。作者和贡献者不对 misuse 负责。
+
